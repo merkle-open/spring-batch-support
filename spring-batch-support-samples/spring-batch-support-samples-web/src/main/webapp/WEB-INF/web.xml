@@ -66,16 +66,6 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
-	<!--<filter>-->
-	<!--<display-name>Terrific Filter</display-name>-->
-	<!--<filter-name>terrificFilter</filter-name>-->
-	<!--<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>-->
-	<!--<async-supported>true</async-supported>-->
-	<!--</filter>-->
-	<!--<filter-mapping>-->
-	<!--<filter-name>terrificFilter</filter-name>-->
-	<!--<url-pattern>/terrific/*</url-pattern>-->
-	<!--</filter-mapping>-->
 
 	<!-- ================ SERVLET DEFINITIONS ================ -->
 

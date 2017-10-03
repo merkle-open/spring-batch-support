@@ -9,18 +9,13 @@
 	</appender>
 
 	<!-- ******* LOGGER CONFIG ******** -->
-	<logger name="com.namics.commons" additivity="false">
+	<logger name="com.namics.oss" additivity="false">
 		<level value="INFO"/>
 		<appender-ref ref="ConsoleAppender"/>
 	</logger>
 
-	<logger name="com.namics.commons.batch" additivity="false">
+	<logger name="com.namics.oss.spring.support.batch" additivity="false">
 		<level value="DEBUG"/>
-		<appender-ref ref="ConsoleAppender"/>
-	</logger>
-
-	<logger name="com.namics.commons.terrific2" additivity="false">
-		<level value="INFO"/>
 		<appender-ref ref="ConsoleAppender"/>
 	</logger>
 
