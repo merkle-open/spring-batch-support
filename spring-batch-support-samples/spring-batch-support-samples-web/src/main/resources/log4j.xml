@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration debug="false" xmlns:log4j='http://jakarta.apache.org/log4j/'>
+
+	<appender name="ConsoleAppender" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{HH:mm:ss:SSS} %p %c{1}:%L %X{principal} - %m%n"/>
+		</layout>
+	</appender>
+
+	<!-- ******* LOGGER CONFIG ******** -->
+	<logger name="com.namics.commons" additivity="false">
+		<level value="INFO"/>
+		<appender-ref ref="ConsoleAppender"/>
+	</logger>
+
+	<logger name="com.namics.commons.batch" additivity="false">
+		<level value="DEBUG"/>
+		<appender-ref ref="ConsoleAppender"/>
+	</logger>
+
+	<logger name="com.namics.commons.terrific2" additivity="false">
+		<level value="INFO"/>
+		<appender-ref ref="ConsoleAppender"/>
+	</logger>
+
+	<logger name="org.springframework" additivity="false">
+		<level value="INFO"/>
+		<appender-ref ref="ConsoleAppender"/>
+	</logger>
+
+	<root>
+		<level value="WARN"/>
+		<appender-ref ref="ConsoleAppender"/>
+	</root>
+
+</log4j:configuration>
