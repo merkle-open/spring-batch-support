@@ -2,7 +2,7 @@
  * Copyright 2000-2014 Namics AG. All rights reserved.
  */
 
-package com.namics.oss.spring.support.batch.starter.sample.config;
+package com.namics.oss.spring.support.batch.starter.sample.jobs;
 
 import com.namics.oss.spring.support.batch.starter.sample.tasklet.LongRunningTasklet;
 import org.springframework.batch.core.Job;
