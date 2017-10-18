@@ -32,7 +32,7 @@ public class SpringBatchSupportWebAutoConfiguration {
 	protected SpringBatchSupportProperties springBatchSupportProperties;
 
 	@Bean
-	public ServletRegistrationBean configurationServlet() {
+	public ServletRegistrationBean springBatchSupportServlet() {
 
 		AnnotationConfigWebApplicationContext applicationContext = new AnnotationConfigWebApplicationContext();
 		applicationContext.register(SpringBatchSupportWebServletConfig.class);
