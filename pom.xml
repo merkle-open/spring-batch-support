@@ -269,7 +269,7 @@
 
 			<!-- Test dependencies -->
 			<dependency>
-				<!-- remove this with spring 5.0.0 since SpringExtension is integrated there -->
+				<!-- todo remove this with spring 5.0.0 since SpringExtension is integrated there -->
 				<groupId>com.github.sbrannen</groupId>
 				<artifactId>spring-test-junit5</artifactId>
 				<version>1.0.0</version>
@@ -484,6 +484,14 @@
 			<releases>
 				<enabled>false</enabled>
 			</releases>
+		</repository>
+		<repository>
+			<!-- todo remove this with spring 5.0.0 since SpringExtension is integrated there -->
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
 		</repository>
 	</repositories>
 
