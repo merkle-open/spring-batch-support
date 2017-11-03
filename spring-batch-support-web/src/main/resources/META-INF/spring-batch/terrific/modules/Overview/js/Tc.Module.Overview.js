@@ -12,7 +12,7 @@
 			if (self.$ctx.data('jobs-url')) {
 				self.url = self.$ctx.data('jobs-url');
 				self.tpl = doT.template(self.$ctx.find('.tpl-jobs').text());
-				self._loadJobs(self);
+				self._loadJobs(self, true);
 			}
 			else {
 				callback();
@@ -33,7 +33,7 @@
 					type: 'post',
 					timeout: 6000,
 					success: function () {
-						self._loadJobs(self);
+						self._loadJobs(self, false);
 					}
 				});
 				return false;
@@ -55,12 +55,14 @@
 
 		},
 
-		_loadJobs: function (self) {
+		_loadJobs: function (self, timeout) {
 			$.getJSON(self.url, function (data) {
 				self.$ctx.find('.jobs').html(self.tpl(data));
-				setTimeout(function () {
-					self._loadJobs(self)
-				}, 10000);
+				if (timeout === true) {
+					setTimeout(function () {
+						self._loadJobs(self, true)
+					}, 10000);
+				}
 			});
 		}
 
