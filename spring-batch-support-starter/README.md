@@ -1,4 +1,4 @@
-# namics-spring-batch-starter
+# spring-batch-support-starter
 
 Spring-Batch module can be configured using Auto-Configuration. This document provides a basic overview on how to utilize the namics-spring-batch-starter. Detailed information on how to work with the starter may be observed in the namics-spring-batch-starter-sample project.
 
