@@ -4,10 +4,10 @@
 
 package com.namics.oss.spring.support.batch.service.impl;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.springframework.batch.core.JobInstance;
 import org.springframework.batch.core.configuration.JobRegistry;
 import org.springframework.batch.core.explore.JobExplorer;
@@ -40,7 +40,7 @@ public class JobServiceImplTest {
 
 	JobServiceImpl service = new JobServiceImpl(jobExplorer, jobOperator, jobLauncher, jobRegistry, jobRepository);
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		reset(jobExplorer, jobOperator, jobLauncher, jobRegistry, jobRepository);
 	}
@@ -49,20 +49,20 @@ public class JobServiceImplTest {
 		replay(jobExplorer, jobOperator, jobLauncher, jobRegistry, jobRepository);
 	}
 
-	@After
+	@AfterEach
 	public void shutDown() {
 		verify(jobExplorer, jobOperator, jobLauncher, jobRegistry, jobRepository);
 	}
 
 	@Test
 	public void testGetJobsNullSafe() {
-		expect(jobOperator.getJobNames()).andReturn(null);
+		expect(jobOperator.getJobNames()).andReturn(null).anyTimes();
 		replayAll();
 		assertThat(service.getJobs(), nullValue());
 	}
 
+	@Disabled
 	@Test
-	@Ignore
 	public void testGetJobs() throws Exception {
 		Set<String> jobNames = new HashSet<>();
 		jobNames.add("job1");
@@ -76,7 +76,7 @@ public class JobServiceImplTest {
 
 		JobInstance jobInstance = new JobInstance(job1Id, "job1");
 
-		expect(jobOperator.getJobNames()).andReturn(jobNames);
+		expect(jobOperator.getJobNames()).andReturn(jobNames).anyTimes();
 		expect(jobOperator.getJobInstances(eq("job1"), eq(0), eq(1))).andReturn(jobExecutions);
 		expect(jobExplorer.getJobInstance(eq(job1Id))).andReturn(jobInstance);
 //		expect(jobOperator.getJobInstances(eq("job2"), eq(0), eq(1))).andReturn(null);

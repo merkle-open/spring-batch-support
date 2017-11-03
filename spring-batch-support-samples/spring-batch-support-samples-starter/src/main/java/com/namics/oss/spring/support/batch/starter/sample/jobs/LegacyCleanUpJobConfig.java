@@ -21,7 +21,7 @@ import javax.inject.Inject;
  * @since 20.06.2014
  */
 @Configuration
-public class JobConfig {
+public class LegacyCleanUpJobConfig {
 
 	@Inject
 	protected JobBuilderFactory jobBuilders;

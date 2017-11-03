@@ -1,37 +1,21 @@
 package com.namics.oss.spring.support.batch.autoconfigure;
 
-import com.namics.oss.spring.support.batch.config.TaskExecutorBatchConfigurer;
-import com.namics.oss.spring.support.batch.service.JobService;
-import com.namics.oss.spring.support.batch.service.impl.JobServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.configuration.JobRegistry;
-import org.springframework.batch.core.configuration.ListableJobLocator;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.support.AutomaticJobRegistrar;
 import org.springframework.batch.core.configuration.support.GenericApplicationContextFactory;
-import org.springframework.batch.core.explore.JobExplorer;
-import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.batch.core.launch.JobOperator;
-import org.springframework.batch.core.launch.support.SimpleJobOperator;
-import org.springframework.batch.core.repository.JobRepository;
-import org.springframework.batch.core.repository.support.JobRepositoryFactoryBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
 import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.util.SystemPropertyUtils;
 
 import javax.inject.Inject;
-import javax.sql.DataSource;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,8 +35,6 @@ import static org.springframework.util.StringUtils.hasText;
 @Configuration
 @EnableConfigurationProperties(SpringBatchSupportProperties.class)
 @ConditionalOnMissingBean({ SpringBatchSupportAutoConfiguration.class })
-@Import(TaskExecutorBatchConfigurer.class)
-@EnableBatchProcessing(modular = true)
 public class AutomaticJobRegistrarConfigurationSupport extends SpringBatchSupportAutoConfiguration {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AutomaticJobRegistrarConfigurationSupport.class);
@@ -61,9 +43,6 @@ public class AutomaticJobRegistrarConfigurationSupport extends SpringBatchSuppor
 
 	@Inject
 	protected SpringBatchSupportProperties springBatchSupportProperties;
-
-	@Inject
-	protected PlatformTransactionManager transactionManager;
 
 
 	@Override
@@ -122,36 +101,5 @@ public class AutomaticJobRegistrarConfigurationSupport extends SpringBatchSuppor
 		return DEFAULT_PACKAGE_TO_SCAN;
 	}
 
-
-	@Bean
-	@ConditionalOnMissingBean(JobRepository.class)
-	public JobRepository batchSimpleJobRepository(DataSource dataSource) throws Exception {
-		JobRepositoryFactoryBean factory = new JobRepositoryFactoryBean();
-		factory.setDataSource(dataSource);
-		factory.setTransactionManager(transactionManager);
-		factory.afterPropertiesSet();
-		return factory.getObject();
-	}
-
-	@Bean
-	@ConditionalOnMissingBean(JobOperator.class)
-	public JobOperator jobOperator(JobExplorer jobExplorer, JobLauncher jobLauncher, ListableJobLocator jobRegistry, JobRepository jobRepository) throws Exception {
-		SimpleJobOperator jobOperator = new SimpleJobOperator();
-		jobOperator.setJobExplorer(jobExplorer);
-		jobOperator.setJobLauncher(jobLauncher);
-		jobOperator.setJobRegistry(jobRegistry);
-		jobOperator.setJobRepository(jobRepository);
-		return jobOperator;
-	}
-
-	@Bean
-	@ConditionalOnMissingBean(JobService.class)
-	public JobService jobService(JobOperator batchJobOperator,
-	                             JobRegistry batchJobRegistry,
-	                             JobExplorer jobExplorer,
-	                             JobLauncher jobLauncher,
-	                             JobRepository jobRepository) throws Exception {
-		return new JobServiceImpl(jobExplorer, batchJobOperator, jobLauncher, batchJobRegistry, jobRepository);
-	}
 
 }

@@ -27,9 +27,10 @@ public class LongRunningJobConfig {
 	@Inject
 	protected StepBuilderFactory stepBuilders;
 
-
+	//modular batch configuration, no problems with bean name clashes.
+	// see com.namics.oss.spring.support.batch.starter.sample.jobs.LegacyCleanUpJobConfig.batchSpringBatchDatabaseCleanUp() with same name
 	@Bean
-	public Job veryLongRunningJob() {
+	public Job batchSpringBatchDatabaseCleanUp() {
 		return jobBuilders.get("veryLongRunningJob")
 		                  .start(stepBuilders.get("veryLongRunningJobStep1")
 		                                     .tasklet(longRunningTasklet())

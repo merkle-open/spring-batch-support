@@ -6,10 +6,11 @@ package com.namics.oss.spring.support.batch.util;
 
 import org.joda.time.DateMidnight;
 import org.joda.time.MutableDateTime;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * DateUtilTest.
@@ -28,6 +29,6 @@ public class DateUtilTest {
 		mutableDateTime.addMinutes(3);
 		mutableDateTime.addSeconds(4);
 		Date then = mutableDateTime.toDate();
-		Assert.assertEquals("26 h : 3 m : 4.000 s", DateUtil.getDuration(now, then));
+		assertEquals("26 h : 3 m : 4.000 s", DateUtil.getDuration(now, then));
 	}
 }
