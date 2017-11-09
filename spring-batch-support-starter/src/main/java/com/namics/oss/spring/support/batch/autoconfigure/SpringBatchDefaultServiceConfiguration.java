@@ -81,7 +81,7 @@ public class SpringBatchDefaultServiceConfiguration {
 	}
 
 	@Bean
-	@ConditionalOnMissingBean(JobLauncher.class)
+	@ConditionalOnMissingBean(JobExplorer.class)
 	public JobExplorer getJobExplorer() throws Exception {
 		BatchConfigurer batchConfigurer = getBatchConfigurer();
 		if (batchConfigurer != null) {
