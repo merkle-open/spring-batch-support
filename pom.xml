@@ -7,7 +7,9 @@
 	<version>1.0.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
+	<name>${project.artifactId}</name>
 	<description>Namics Spring Batch Support Library aims to provide some sugar to use spring-batch.</description>
+	<url>https://github.com/namics/spring-batch-support</url>
 
 	<licenses>
 		<license>
