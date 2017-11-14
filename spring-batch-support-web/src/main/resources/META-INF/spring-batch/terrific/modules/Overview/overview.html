@@ -1,0 +1,81 @@
+<div class="mod mod-overview" data-jobs-url="jobs">
+	<script id="tpl_results" class="tpl-jobs" type="text/x-dot-template">
+		<div class="table-responsive">
+			<table class="table table-hover table-condensed table-striped">
+				<thead>
+				<tr>
+					<th>Job Name</th>
+					<th>Status</th>
+					<th>Start Time - End Time</th>
+					<th>Duration</th>
+					<th>Actions</th>
+				</tr>
+				</thead>
+				<tbody>
+				{{~it :job:index}}
+				<tr>
+					<td>{{= job.name}}</td>
+					<td>
+						{{= job.status}}
+						{{? job.status == 'FAILED' }}
+						<a class="edit btn btn-xs js-status" data-name="{{= job.name}}" data-state="{{=job.exitStatus}}">
+							<i class="glyphicon glyphicon-zoom-in"></i> Status
+						</a>
+						{{?}}
+					</td>
+					<td>{{= job.startTimeFormatted}} - {{= job.endTimeFormatted}}</td>
+					<td>{{= job.duration}}</td>
+					<td>
+						{{? job.running }}
+						Running...
+						<form method="POST" style="margin-bottom:0px">
+							<a class="btn btn-xs js-control-job" data-url="jobs/{{=job.name}}/stop">
+								<i class="glyphicon glyphicon-stop"></i> Stop</a>
+						</form>
+						{{??}}
+						<form method="POST" style="margin-bottom:0px">
+							<a class="btn btn-xs js-control-job" data-url="jobs/{{=job.name}}/start">
+								<i class="glyphicon glyphicon-play"></i> Start</a>
+						</form>
+						{{?}}
+						<a href="./detail.html?job={{=job.name}}" class="edit btn btn-xs"><i class="glyphicon glyphicon-zoom-in"></i> Details</a>
+					</td>
+				</tr>
+				{{~}}
+				</tbody>
+			</table>
+		</div>
+	</script>
+	<div class="jobs"></div>
+</div>
+<div class="modal bs-modal-detail" tabindex="-1" role="dialog" aria-labelledby="JobState" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">Job State Detail</h4>
+			</div>
+			<div class="modal-body">
+				<table class="table">
+					<thead>
+					<tr>
+						<th>Job Name</th>
+						<th class="js-detail-name">Name</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<td class="js-detail-state" colspan="2">400</td>
+					</tr>
+
+					</tbody>
+				</table>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+</div>

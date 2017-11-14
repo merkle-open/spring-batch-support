@@ -1,0 +1,119 @@
+<div class="mod mod-detail" data-job-url="jobs/">
+	<script id="tpl_results" class="tpl-job" type="text/x-dot-template">
+
+		<h2>Job: {{=it.name}}</h2>
+
+		<dl class="dl-horizontal">
+			{{~it.jobParameters :param:index}}
+			<dt>
+				{{? index==0}}
+				Job Parameters
+				{{?}}
+			</dt>
+			<dd>
+				{{=param.key}} <span style="padding-left: 20px;">{{=param.value}}</span>
+			</dd>
+			{{~}}
+			<dt>Status</dt>
+			<dd>{{=it.status}}</dd>
+			<dt>Actions</dt>
+			<dd>{{? it.running }}
+				Running...
+				<form method="POST" style="margin-bottom:0px">
+					<a class="btn btn-xs js-control-job" data-url="jobs/{{=it.name}}/stop">
+						<i class="glyphicon glyphicon-stop"></i> Stop
+					</a>
+				</form>
+				{{??}}
+				<form method="POST" style="margin-bottom:0px">
+					<a class="btn btn-xs js-control-job" data-url="jobs/{{=it.name}}/start">
+						<i class="glyphicon glyphicon-play"></i> Start
+					</a>
+				</form>
+				<a class="btn btn-xs js-confirm" data-url="jobs/{{=it.name}}/start" href="">
+					<i class="glyphicon glyphicon-play"></i> Start With Parameters
+				</a>
+				<br/>
+				{{?}}
+				<a href="./" class="edit btn btn-xs"><i class="glyphicon glyphicon-arrow-left"></i> Back</a>
+			</dd>
+		</dl>
+
+
+		<h3>Steps</h3>
+
+		<div class="table-responsive">
+			<table class="table table-condensed table-striped">
+				<thead>
+				<tr>
+					<th>Step Name</th>
+					<th>Status</th>
+					<th>Start Time - End Time</th>
+					<th>Duration</th>
+					<th>Last Updated</th>
+					<th>read count</th>
+					<th>write count</th>
+					<th>commit count</th>
+					<th>rollback count</th>
+					<th>readSkip count</th>
+					<th>processSkip count</th>
+					<th>writeSkip count</th>
+					<th>exitStatus</th>
+				</tr>
+				</thead>
+				<tbody>
+				{{~it.steps :step:index}}
+				<tr>
+					<td>{{= step.stepName}}</td>
+					<td>{{= step.status}}</td>
+					<td>{{= step.startTimeFormatted}} - {{= step.endTimeFormatted}}</td>
+					<td>{{= step.duration}}</td>
+					<td>{{= step.lastUpdatedFormatted}}</td>
+					<td>{{= step.readCount}}</td>
+					<td>{{= step.writeCount}}</td>
+					<td>{{= step.commitCount}}</td>
+					<td>{{= step.rollbackCount}}</td>
+					<td>{{= step.readSkipCount}}</td>
+					<td>{{= step.processSkipCou}}</td>
+					<td>{{= step.writeSkipCount}}</td>
+					<td>{{= step.exitStatus}}</td>
+				</tr>
+				{{~}}
+				</tbody>
+			</table>
+		</div>
+	</script>
+	<div class="job"></div>
+
+	<div class="modal bs-modal-start-with-param" tabindex="-1" role="dialog" aria-labelledby="Start Job With Params" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">Start Job With Parameters</h4>
+				</div>
+				<div class="modal-body">
+					<a class="btn btn-default btn-xs js-add-param"><span class="glyphicon glyphicon-plus"></span> Add Parameter</a>
+					<a class="btn btn-default btn-xs js-clean-param"><span class="glyphicon glyphicon-minus"></span> Clean All Parameters</a>
+					<table class="table">
+						<thead>
+						<tr>
+							<th>Parameter Name</th>
+							<th>Type</th>
+							<th>Value</th>
+							<th class="text-right">Action</th>
+						</tr>
+						</thead>
+						<tbody id="paramContent">
+						</tbody>
+					</table>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-primary js-execute">Run Batch Job</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
