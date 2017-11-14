@@ -9,6 +9,7 @@
 	</parent>
 
 	<artifactId>spring-batch-support-samples-starter</artifactId>
+	<packaging>jar</packaging>
 
 	<dependencies>
 		<dependency>
