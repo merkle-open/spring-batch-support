@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.namics.oss.spring.support.batch</groupId>
 		<artifactId>spring-batch-support-samples</artifactId>
-		<version>1.0.3-SNAPSHOT</version>
+		<version>1.0.2</version>
 	</parent>
 
 	<artifactId>spring-batch-support-samples-web</artifactId>
