@@ -4,7 +4,7 @@
 
 	<groupId>com.namics.oss.spring.support.batch</groupId>
 	<artifactId>spring-batch-support-pom</artifactId>
-	<version>1.0.2-SNAPSHOT</version>
+	<version>1.0.1</version>
 	<packaging>pom</packaging>
 
 	<description>Namics Spring Batch Support Library aims to provide some sugar to use spring-batch.</description>
