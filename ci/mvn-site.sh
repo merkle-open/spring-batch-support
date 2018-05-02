@@ -2,7 +2,7 @@
 
 #if [ "$TRAVIS_PULL_REQUEST" == 'false' ]; then
 
-	mvn clean site:site site -DtestFailureIgnore=true --fail-never -DskipITs=false -P site --settings ci/mvnsettings.xml
+	mvn clean site:site site -X -DtestFailureIgnore=true --fail-never -DskipITs=false -P site --settings ci/mvnsettings.xml
 	mvn site:stage -DtestFailureIgnore=true --fail-never  -P site
 
 	echo "Clean old docs folder"
