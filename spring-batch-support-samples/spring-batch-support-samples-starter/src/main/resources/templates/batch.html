@@ -35,13 +35,13 @@
 
 <h1>Spring Boot with Spring Batch Demo</h1>
 
-<div data-th-unless="${param.containsKey('jobName')}">
+<div data-th-unless="${jobName}">
 	<iframe class="frame" data-th-src="@{'/batch/overview.html'}"></iframe>
 </div>
 
-<div data-th-if="${param.containsKey('jobName')}">
+<div data-th-if="${jobNmae}">
 	<iframe class="frame"
-			data-th-src="@{'/batch/detail.html'(job=${param.jobName[0]})}"></iframe>
+			data-th-src="@{'/batch/detail.html'(job=${jobName})}"></iframe>
 </div>
 
 </body>

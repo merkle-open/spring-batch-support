@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LongRunningTasklet.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">spring-batch-support-samples-starter</a> &gt; <a href="index.source.html" class="el_package">com.namics.oss.spring.support.batch.starter.sample.tasklet</a> &gt; <span class="el_source">LongRunningTasklet.java</span></div><h1>LongRunningTasklet.java</h1><pre class="source lang-java linenums">package com.namics.oss.spring.support.batch.starter.sample.tasklet;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.StepContribution;
+import org.springframework.batch.core.scope.context.ChunkContext;
+import org.springframework.batch.core.step.tasklet.Tasklet;
+import org.springframework.batch.repeat.RepeatStatus;
+
+import static java.lang.Thread.sleep;
+import static java.util.concurrent.TimeUnit.MINUTES;
+
+/**
+ * LongRunningTasklet.
+ *
+ * @author lboesch, Namics AG
+ * @since 28.08.17 15:08
+ */
+public class LongRunningTasklet implements Tasklet {
+<span class="fc" id="L20">	private static final Logger LOG = LoggerFactory.getLogger(LongRunningTasklet.class);</span>
+	protected final int minutesToSleep;
+
+<span class="fc" id="L23">	public LongRunningTasklet(int minutesToSleep) {</span>
+<span class="fc" id="L24">		this.minutesToSleep = minutesToSleep;</span>
+<span class="fc" id="L25">	}</span>
+
+	@Override
+	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+<span class="nc" id="L29">		LOG.warn(&quot;start of long running tasklet&quot;);</span>
+		try {
+<span class="nc" id="L31">			sleep(MINUTES.toMillis(minutesToSleep));</span>
+<span class="nc" id="L32">		} catch (RuntimeException e) {</span>
+<span class="nc" id="L33">			LOG.error(&quot;exception on tasklet!&quot;, e);</span>
+<span class="nc" id="L34">		}</span>
+<span class="nc" id="L35">		LOG.warn(&quot;end of long running tasklet&quot;);</span>
+<span class="nc" id="L36">		return RepeatStatus.FINISHED;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.0.201801022044</span></div></body></html>

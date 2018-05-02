@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BatchCleanupServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">spring-batch-support</a> &gt; <a href="index.source.html" class="el_package">com.namics.oss.spring.support.batch.service.impl</a> &gt; <span class="el_source">BatchCleanupServiceImpl.java</span></div><h1>BatchCleanupServiceImpl.java</h1><pre class="source lang-java linenums">package com.namics.oss.spring.support.batch.service.impl;
+
+import com.namics.oss.spring.support.batch.service.BatchCleanupService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+
+import static java.time.LocalDateTime.now;
+import static java.time.ZoneId.systemDefault;
+import static java.util.Date.from;
+import static org.springframework.util.CollectionUtils.isEmpty;
+
+/**
+ * BatchCleanupServiceImpl.
+ *
+ * @author lboesch, Namics AG
+ * @since 24.08.17 16:12
+ */
+public class BatchCleanupServiceImpl implements BatchCleanupService {
+<span class="nc" id="L26">	private static final Logger LOG = LoggerFactory.getLogger(BatchCleanupServiceImpl.class);</span>
+
+	protected final int keepDays;
+
+	protected final JdbcTemplate jdbcTemplate;
+
+<span class="nc" id="L32">	public BatchCleanupServiceImpl(int keepDays, JdbcTemplate jdbcTemplate) {</span>
+<span class="nc" id="L33">		this.keepDays = keepDays;</span>
+<span class="nc" id="L34">		this.jdbcTemplate = jdbcTemplate;</span>
+<span class="nc" id="L35">	}</span>
+
+	@Override
+	@Transactional
+	public int cleanBatchTables() {
+<span class="nc" id="L40">		Date referenceDate = from(now().minusDays(keepDays).atZone(systemDefault()).toInstant());</span>
+
+<span class="nc" id="L42">		LOG.info(&quot;deleting batch job executions older than [{}] since keepDays is set to [{}]&quot;, referenceDate, keepDays);</span>
+<span class="nc" id="L43">		List&lt;JobExecution&gt; jobExecutions = this.jdbcTemplate.query(</span>
+				&quot;select JOB_EXECUTION_ID, JOB_INSTANCE_ID FROM BATCH_JOB_EXECUTION WHERE END_TIME &lt; ?&quot;, JOB_ROW_MAPPER,
+				referenceDate);
+<span class="nc bnc" id="L46" title="All 2 branches missed.">		if (isEmpty(jobExecutions)) {</span>
+<span class="nc" id="L47">			return 0;</span>
+		}
+
+<span class="nc" id="L50">		LOG.debug(jobExecutions.size() + &quot; job executions found&quot;);</span>
+<span class="nc" id="L51">		removeJobExecutions(jobExecutions);</span>
+<span class="nc" id="L52">		return jobExecutions.size();</span>
+	}
+
+	/*
+	 * This code is more or less the same as here:
+	 * org.springframework.batch.test.JobRepositoryTestUtils.removeJobExecutions(Collection&lt;JobExecution&gt;)
+	 */
+	protected void removeJobExecutions(Collection&lt;JobExecution&gt; list) {
+<span class="nc bnc" id="L60" title="All 2 branches missed.">		for (JobExecution jobExecution : list) {</span>
+<span class="nc" id="L61">			List&lt;Long&gt; stepExecutionIds = this.jdbcTemplate.query(&quot;select STEP_EXECUTION_ID from BATCH_STEP_EXECUTION where JOB_EXECUTION_ID=?&quot;,</span>
+<span class="nc" id="L62">			                                                      ID_ROW_MAPPER, jobExecution.getId());</span>
+<span class="nc bnc" id="L63" title="All 2 branches missed.">			for (Long stepExecutionId : stepExecutionIds) {</span>
+<span class="nc" id="L64">				this.jdbcTemplate.update(&quot;delete from BATCH_STEP_EXECUTION_CONTEXT where STEP_EXECUTION_ID=?&quot;, stepExecutionId);</span>
+<span class="nc" id="L65">				this.jdbcTemplate.update(&quot;delete from BATCH_STEP_EXECUTION where STEP_EXECUTION_ID=?&quot;, stepExecutionId);</span>
+<span class="nc" id="L66">			}</span>
+
+<span class="nc" id="L68">			this.jdbcTemplate.update(&quot;delete from BATCH_JOB_EXECUTION_CONTEXT where JOB_EXECUTION_ID=?&quot;, jobExecution.getId());</span>
+<span class="nc" id="L69">			this.jdbcTemplate.update(&quot;delete from BATCH_JOB_EXECUTION_PARAMS where JOB_EXECUTION_ID=?&quot;, jobExecution.getId());</span>
+<span class="nc" id="L70">			this.jdbcTemplate.update(&quot;delete from BATCH_JOB_EXECUTION where JOB_EXECUTION_ID=?&quot;, jobExecution.getId());</span>
+<span class="nc" id="L71">		}</span>
+
+<span class="nc bnc" id="L73" title="All 2 branches missed.">		for (JobExecution jobExecution : list) {</span>
+<span class="nc" id="L74">			this.jdbcTemplate.update(&quot;delete from BATCH_JOB_INSTANCE where JOB_INSTANCE_ID=?&quot;, jobExecution.getJobId());</span>
+<span class="nc" id="L75">		}</span>
+<span class="nc" id="L76">	}</span>
+
+<span class="nc" id="L78">	protected static final RowMapper&lt;Long&gt; ID_ROW_MAPPER = (rs, rowNum) -&gt; rs.getLong(1);</span>
+
+<span class="nc" id="L80">	protected static final RowMapper&lt;JobExecution&gt; JOB_ROW_MAPPER = (rs, rowNum) -&gt; new JobExecution(rs.getLong(1), rs.getLong(2));</span>
+
+	protected static final class JobExecution {
+
+		private final Long id;
+
+		private final Long jobId;
+
+<span class="nc" id="L88">		private JobExecution(Long id, Long jobId) {</span>
+<span class="nc" id="L89">			this.id = id;</span>
+<span class="nc" id="L90">			this.jobId = jobId;</span>
+<span class="nc" id="L91">		}</span>
+
+		private Long getId() {
+<span class="nc" id="L94">			return id;</span>
+		}
+
+		private Long getJobId() {
+<span class="nc" id="L98">			return jobId;</span>
+		}
+
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.0.201801022044</span></div></body></html>
