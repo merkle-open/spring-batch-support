@@ -11,6 +11,12 @@
 	<artifactId>spring-batch-support-starter</artifactId>
 	<packaging>jar</packaging>
 
+
+	<properties>
+		<main.basedir>${project.basedir}/..</main.basedir>
+	</properties>
+
+	
 	<dependencies>
 		<dependency>
 			<groupId>com.namics.oss.spring.support.batch</groupId>

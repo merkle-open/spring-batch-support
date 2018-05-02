@@ -60,6 +60,7 @@
 		<java.target.version>${java.version}</java.target.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
+		<main.basedir>${project.basedir}</main.basedir>
 
 		<maven.build.timestamp.format>yyyy-MM-dd-z-HH-mm-ss</maven.build.timestamp.format>
 
@@ -461,7 +462,7 @@
 		</repository>
 		<site>
 			<id>localSite</id>
-			<url>file:${project.basedir}/docs</url>
+			<url>file:${main.basedir}/docs</url>
 		</site>
 	</distributionManagement>
 

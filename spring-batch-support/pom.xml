@@ -10,6 +10,9 @@
 
 	<artifactId>spring-batch-support</artifactId>
 	<packaging>jar</packaging>
+	<properties>
+		<main.basedir>${project.basedir}/..</main.basedir>
+	</properties>
 
 	<dependencies>
 		<dependency>

@@ -11,6 +11,11 @@
 	<artifactId>spring-batch-support-samples-starter</artifactId>
 	<packaging>jar</packaging>
 
+	<properties>
+		<main.basedir>${project.parent.parent.basedir}</main.basedir>
+		<main.basedir>${project.basedir}/../..</main.basedir>
+	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

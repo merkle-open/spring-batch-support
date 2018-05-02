@@ -11,6 +11,10 @@
 	<artifactId>spring-batch-support-web</artifactId>
 	<packaging>jar</packaging>
 
+	<properties>
+		<main.basedir>${project.basedir}/..</main.basedir>
+	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>

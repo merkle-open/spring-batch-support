@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BatchJobRestart.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">spring-batch-support</a> &gt; <a href="index.source.html" class="el_package">com.namics.oss.spring.support.batch.listener</a> &gt; <span class="el_source">BatchJobRestart.java</span></div><h1>BatchJobRestart.java</h1><pre class="source lang-java linenums">package com.namics.oss.spring.support.batch.listener;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.explore.JobExplorer;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
+
+import java.util.Collection;
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
+
+/**
+ * BatchJobRestart.
+ *
+ * @author lboesch, Namics AG
+ * @since 28.08.17 14:28
+ */
+public class BatchJobRestart implements ApplicationListener&lt;ContextRefreshedEvent&gt; {
+
+<span class="nc" id="L23">	private static final Logger LOG = LoggerFactory.getLogger(BatchJobRestart.class);</span>
+
+	protected final JobExplorer jobExplorer;
+
+<span class="nc" id="L27">	public BatchJobRestart(JobExplorer jobExplorer) {</span>
+<span class="nc" id="L28">		this.jobExplorer = jobExplorer;</span>
+<span class="nc" id="L29">	}</span>
+
+	@Override
+	public void onApplicationEvent(ContextRefreshedEvent event) {
+<span class="nc" id="L33">		List&lt;JobExecution&gt; runningJobInstancesOnStartup = jobExplorer.getJobNames()</span>
+<span class="nc" id="L34">		                                                             .stream()</span>
+<span class="nc" id="L35">		                                                             .map(jobExplorer::findRunningJobExecutions)</span>
+<span class="nc" id="L36">		                                                             .flatMap(Collection::stream)</span>
+<span class="nc" id="L37">		                                                             .collect(toList());</span>
+<span class="nc" id="L38">		runningJobInstancesOnStartup.forEach(e -&gt; LOG.warn(&quot;found running job execution on context refresh: name={}, instanceId={}&quot;,</span>
+<span class="nc" id="L39">		                                                   e.getJobConfigurationName(), e.getJobInstance().getInstanceId()));</span>
+<span class="nc" id="L40">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.0.201801022044</span></div></body></html>

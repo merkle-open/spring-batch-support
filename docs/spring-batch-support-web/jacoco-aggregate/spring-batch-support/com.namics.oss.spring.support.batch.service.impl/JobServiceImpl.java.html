@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>JobServiceImpl.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">spring-batch-support-web</a> &gt; <a href="../index.html" class="el_bundle">spring-batch-support</a> &gt; <a href="index.source.html" class="el_package">com.namics.oss.spring.support.batch.service.impl</a> &gt; <span class="el_source">JobServiceImpl.java</span></div><h1>JobServiceImpl.java</h1><pre class="source lang-java linenums">package com.namics.oss.spring.support.batch.service.impl;
+
+import com.namics.oss.spring.support.batch.converter.JobExecutionToJobConverter;
+import com.namics.oss.spring.support.batch.model.Job;
+import com.namics.oss.spring.support.batch.service.JobService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.*;
+import org.springframework.batch.core.configuration.JobRegistry;
+import org.springframework.batch.core.explore.JobExplorer;
+import org.springframework.batch.core.launch.*;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.repository.JobRestartException;
+
+import java.util.*;
+
+import static org.springframework.util.CollectionUtils.isEmpty;
+
+/**
+ * Default implementation.
+ * used to start/stop jobs without knowing of the specific spring batch job repo/launcher classes. adds timestamp to each job as param to ensure uniqueness.
+ *
+ * @author lboesch, Namics AG
+ * @since Jan 10, 2013
+ */
+public class JobServiceImpl implements JobService {
+<span class="fc" id="L29">	private static final Logger LOG = LoggerFactory.getLogger(JobServiceImpl.class);</span>
+	public static final String EXECUTION_TIMESTAMP = &quot;executionTimestamp&quot;;
+
+	protected JobExplorer jobExplorer;
+	protected JobOperator jobOperator;
+	protected JobLauncher jobLauncher;
+	protected JobRegistry jobRegistry;
+	protected JobRepository jobRepository;
+
+	public JobServiceImpl(JobExplorer jobExplorer, JobOperator jobOperator, JobLauncher jobLauncher, JobRegistry jobRegistry,
+<span class="fc" id="L39">	                      JobRepository jobRepository) {</span>
+<span class="fc" id="L40">		this.jobExplorer = jobExplorer;</span>
+<span class="fc" id="L41">		this.jobOperator = jobOperator;</span>
+<span class="fc" id="L42">		this.jobLauncher = jobLauncher;</span>
+<span class="fc" id="L43">		this.jobRegistry = jobRegistry;</span>
+<span class="fc" id="L44">		this.jobRepository = jobRepository;</span>
+<span class="fc" id="L45">	}</span>
+
+	@Override
+	public List&lt;com.namics.oss.spring.support.batch.model.Job&gt; getJobs() {
+<span class="fc" id="L49">		Set&lt;String&gt; jobNames = jobOperator.getJobNames();</span>
+<span class="pc bpc" id="L50" title="1 of 2 branches missed.">		if (!isEmpty(jobNames)) {</span>
+<span class="nc" id="L51">			List&lt;com.namics.oss.spring.support.batch.model.Job&gt; jobs = new ArrayList&lt;&gt;(jobNames.size());</span>
+<span class="nc bnc" id="L52" title="All 2 branches missed.">			for (String jobName : jobNames) {</span>
+<span class="nc" id="L53">				com.namics.oss.spring.support.batch.model.Job job = getJobOfJobName(jobName);</span>
+<span class="nc" id="L54">				jobs.add(job);</span>
+<span class="nc" id="L55">			}</span>
+<span class="nc" id="L56">			return jobs;</span>
+		}
+<span class="fc" id="L58">		return null;</span>
+	}
+
+	@Override
+	public com.namics.oss.spring.support.batch.model.Job getJob(String jobName) {
+<span class="nc" id="L63">		return getJobOfJobName(jobName);</span>
+	}
+
+	/**
+	 * returns the job with the last execution
+	 *
+	 * @param jobName name of the job
+	 * @return job with latest execution
+	 */
+	protected com.namics.oss.spring.support.batch.model.Job getJobOfJobName(String jobName) {
+<span class="nc" id="L73">		com.namics.oss.spring.support.batch.model.Job job = new Job(jobName);</span>
+<span class="nc" id="L74">		JobExecution execution = getLatestJobExecution(jobName);</span>
+<span class="nc bnc" id="L75" title="All 2 branches missed.">		if (execution != null) {</span>
+<span class="nc" id="L76">			new JobExecutionToJobConverter().convert(execution, job);</span>
+		}
+<span class="nc" id="L78">		return job;</span>
+	}
+
+	/**
+	 * get latest execution for a job with the given name.
+	 *
+	 * @param jobName name of the job
+	 * @return latest execution
+	 */
+	protected JobExecution getLatestJobExecution(String jobName) {
+		try {
+<span class="nc" id="L89">			List&lt;Long&gt; jobInstances = jobOperator.getJobInstances(jobName, 0, 1); //todo expensive query!</span>
+<span class="nc bnc" id="L90" title="All 2 branches missed.">			if (isEmpty(jobInstances)) {</span>
+<span class="nc" id="L91">				return null;</span>
+			}
+<span class="nc" id="L93">			Long jobInstanceId = jobInstances.get(0);</span>
+<span class="nc" id="L94">			JobInstance jobInstance = jobExplorer.getJobInstance(jobInstanceId);</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">			if (jobInstance == null) {</span>
+<span class="nc" id="L96">				return null;</span>
+			}
+<span class="nc" id="L98">			List&lt;JobExecution&gt; jobExecutions = jobExplorer.getJobExecutions(jobInstance);</span>
+<span class="nc bnc" id="L99" title="All 2 branches missed.">			if (isEmpty(jobExecutions)) {</span>
+<span class="nc" id="L100">				return null;</span>
+			}
+<span class="nc" id="L102">			return jobExecutions.get(0);</span>
+<span class="nc" id="L103">		} catch (NoSuchJobException e) {</span>
+<span class="nc" id="L104">			return null;</span>
+		}
+
+	}
+
+	@Override
+	public void stopJob(String jobName) {
+<span class="nc" id="L111">		JobExecution execution = getLatestJobExecution(jobName);</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">		if (execution != null) {</span>
+			try {
+<span class="nc" id="L114">				jobOperator.stop(execution.getId());</span>
+<span class="nc" id="L115">			} catch (NoSuchJobExecutionException e) {</span>
+<span class="nc" id="L116">				LOG.error(&quot;there's no job execution for job {}: {}&quot;, jobName, e, &quot;&quot;);</span>
+<span class="nc" id="L117">				LOG.debug(&quot;there's no job execution for job {} &quot;, jobName, e);</span>
+<span class="nc" id="L118">			} catch (JobExecutionNotRunningException e) {</span>
+<span class="nc" id="L119">				LOG.warn(&quot;can't stop job, is not running: {}&quot;, e, &quot;&quot;);</span>
+<span class="nc" id="L120">				LOG.debug(&quot;can't stop job, is not running&quot;, e);</span>
+<span class="nc" id="L121">			}</span>
+		}
+<span class="nc" id="L123">	}</span>
+
+	@Override
+	public void abandonJob(String jobName) {
+<span class="nc" id="L127">		JobExecution execution = getLatestJobExecution(jobName);</span>
+<span class="nc bnc" id="L128" title="All 2 branches missed.">		if (execution != null) {</span>
+<span class="nc" id="L129">			execution.upgradeStatus(BatchStatus.ABANDONED);</span>
+<span class="nc" id="L130">			execution.setEndTime(new Date());</span>
+<span class="nc" id="L131">			jobRepository.update(execution);</span>
+		}
+<span class="nc" id="L133">	}</span>
+
+	@Override
+	public void startJob(String jobName) {
+<span class="nc" id="L137">		startJob(jobName, new JobParameters());</span>
+<span class="nc" id="L138">	}</span>
+
+	@Override
+	public void startJob(String jobName, JobParameters jobParameters) {
+<span class="nc" id="L142">		JobExecution jobExecution = getLatestJobExecution(jobName);</span>
+
+<span class="nc bnc" id="L144" title="All 4 branches missed.">		if (jobExecution != null &amp;&amp; jobExecution.getStatus().isRunning()) {</span>
+<span class="nc" id="L145">			LOG.info(&quot;the job {} is already running&quot;, jobName);</span>
+<span class="nc" id="L146">			return;</span>
+		}
+
+<span class="nc" id="L149">		JobParametersBuilder builder = new JobParametersBuilder(jobParameters);</span>
+<span class="nc" id="L150">		Date executionTimestamp = Calendar.getInstance().getTime();</span>
+<span class="nc" id="L151">		builder.addDate(EXECUTION_TIMESTAMP, executionTimestamp);</span>
+		try {
+<span class="nc" id="L153">			jobLauncher.run(jobRegistry.getJob(jobName), builder.toJobParameters());</span>
+<span class="nc" id="L154">		} catch (NoSuchJobException e) {</span>
+<span class="nc" id="L155">			LOG.error(&quot;the job {} does not exist: {}&quot;, jobName, e, &quot;&quot;);</span>
+<span class="nc" id="L156">			LOG.debug(&quot;the job {} does not exist&quot;, jobName, e);</span>
+<span class="nc" id="L157">		} catch (JobParametersInvalidException e) {</span>
+<span class="nc" id="L158">			LOG.error(&quot;the job {} does have invalid parameters: {}&quot;, jobName, e, &quot;&quot;);</span>
+<span class="nc" id="L159">			LOG.debug(&quot;the job {} does have invalid parameters&quot;, jobName, e);</span>
+<span class="nc" id="L160">		} catch (JobExecutionAlreadyRunningException e) {</span>
+<span class="nc" id="L161">			LOG.error(&quot;the job {} is already running: {}&quot;, jobName, e, &quot;&quot;);</span>
+<span class="nc" id="L162">			LOG.debug(&quot;the job {} is already running&quot;, jobName, e);</span>
+<span class="nc" id="L163">		} catch (JobRestartException e) {</span>
+<span class="nc" id="L164">			LOG.error(&quot;the job {} could not be restarted: {}&quot;, jobName, e, &quot;&quot;);</span>
+<span class="nc" id="L165">			LOG.debug(&quot;the job {} could not be restarted&quot;, jobName, e);</span>
+<span class="nc" id="L166">		} catch (JobInstanceAlreadyCompleteException e) {</span>
+<span class="nc" id="L167">			LOG.error(&quot;the job {} could not restart an already successful instance: {}&quot;, jobName, e, &quot;&quot;);</span>
+<span class="nc" id="L168">			LOG.debug(&quot;the job {} could not restart an already successful instance&quot;, jobName, e);</span>
+<span class="nc" id="L169">		}</span>
+<span class="nc" id="L170">	}</span>
+
+	public void startNextInstance(String jobName) {
+		try {
+<span class="nc" id="L174">			jobOperator.startNextInstance(jobName);</span>
+<span class="nc" id="L175">		} catch (NoSuchJobException e) {</span>
+<span class="nc" id="L176">			LOG.error(&quot;the job {} does not exist: {}&quot;, jobName, e, &quot;&quot;);</span>
+<span class="nc" id="L177">			LOG.debug(&quot;the job {} does not exist&quot;, jobName, e);</span>
+<span class="nc" id="L178">		} catch (JobParametersInvalidException e) {</span>
+<span class="nc" id="L179">			LOG.error(&quot;the job {} does have invalid parameters: {}&quot;, jobName, e, &quot;&quot;);</span>
+<span class="nc" id="L180">			LOG.debug(&quot;the job {} does have invalid parameters&quot;, jobName, e);</span>
+<span class="nc" id="L181">		} catch (JobExecutionAlreadyRunningException e) {</span>
+<span class="nc" id="L182">			LOG.error(&quot;the job {} is already running: {}&quot;, jobName, e, &quot;&quot;);</span>
+<span class="nc" id="L183">			LOG.debug(&quot;the job {} is already running&quot;, jobName, e);</span>
+<span class="nc" id="L184">		} catch (JobRestartException e) {</span>
+<span class="nc" id="L185">			LOG.error(&quot;the job {} could not be restarted: {}&quot;, jobName, e, &quot;&quot;);</span>
+<span class="nc" id="L186">			LOG.debug(&quot;the job {} could not be restarted&quot;, jobName, e);</span>
+<span class="nc" id="L187">		} catch (JobInstanceAlreadyCompleteException e) {</span>
+<span class="nc" id="L188">			LOG.error(&quot;the job {} could not restart an already successful instance: {}&quot;, jobName, e, &quot;&quot;);</span>
+<span class="nc" id="L189">			LOG.debug(&quot;the job {} could not restart an already successful instance&quot;, jobName, e);</span>
+<span class="nc" id="L190">		} catch (JobParametersNotFoundException e) {</span>
+<span class="nc" id="L191">			LOG.error(&quot;the job {} could not find params: {}&quot;, jobName, e, &quot;&quot;);</span>
+<span class="nc" id="L192">			LOG.debug(&quot;the job {} could not find params&quot;, jobName, e);</span>
+<span class="nc" id="L193">		}</span>
+<span class="nc" id="L194">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.0.201801022044</span></div></body></html>
