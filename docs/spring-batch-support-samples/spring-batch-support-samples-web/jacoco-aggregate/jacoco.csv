@@ -15,8 +15,8 @@ spring-batch-support-samples-web/spring-batch-support,com.namics.oss.spring.supp
 spring-batch-support-samples-web/spring-batch-support,com.namics.oss.spring.support.batch.model,SimpleStep,184,0,2,0,72,0,45,0,44,0
 spring-batch-support-samples-web/spring-batch-support,com.namics.oss.spring.support.batch.model,Job,112,0,2,0,44,0,27,0,26,0
 spring-batch-support-samples-web/spring-batch-support,com.namics.oss.spring.support.batch.model,Parameter,43,0,0,0,16,0,10,0,10,0
-spring-batch-support-samples-web/spring-batch-support,com.namics.oss.spring.support.batch.converter,JobExecutionToJobConverter,120,0,12,0,28,0,11,0,5,0
 spring-batch-support-samples-web/spring-batch-support,com.namics.oss.spring.support.batch.converter,StepExecutionToSimpleStepConverter,65,0,2,0,18,0,4,0,3,0
+spring-batch-support-samples-web/spring-batch-support,com.namics.oss.spring.support.batch.converter,JobExecutionToJobConverter,120,0,12,0,28,0,11,0,5,0
 spring-batch-support-samples-web/spring-batch-support,com.namics.oss.spring.support.batch.listener,FailIfSkippedJobExecutionListener,26,0,4,0,8,0,4,0,2,0
 spring-batch-support-samples-web/spring-batch-support,com.namics.oss.spring.support.batch.listener,BatchJobRestart,41,0,0,0,12,0,4,0,4,0
 spring-batch-support-samples-web/spring-batch-support,com.namics.oss.spring.support.batch.listener,FailedJobExecutionListener,137,0,12,0,22,0,9,0,3,0
