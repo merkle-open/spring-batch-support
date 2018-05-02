@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-#if [ "$TRAVIS_PULL_REQUEST" == 'false' ]; then
+if [ "$TRAVIS_PULL_REQUEST" == 'false' ]; then
 
 	mvn clean site:site site -DtestFailureIgnore=true --fail-never -DskipITs=false -P site --settings ci/mvnsettings.xml -e
 	mvn site:stage -DtestFailureIgnore=true --fail-never  -P site
@@ -14,4 +14,4 @@
 	git add docs
 
 	git commit -a -m "Update docs"
-#fi
+fi
