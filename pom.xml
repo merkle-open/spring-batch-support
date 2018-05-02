@@ -467,6 +467,10 @@
 			<id>ossrh</id>
 			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
+		<site>
+			<id>localSite</id>
+			<url>file:${project.basedir}/docs</url>
+		</site>
 	</distributionManagement>
 
 	<scm>
@@ -485,14 +489,6 @@
 			<releases>
 				<enabled>false</enabled>
 			</releases>
-		</repository>
-		<repository>
-			<!-- todo remove this with spring 5.0.0 since SpringExtension is integrated there -->
-			<id>jitpack.io</id>
-			<url>https://jitpack.io</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
 		</repository>
 	</repositories>
 
