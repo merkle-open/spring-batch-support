@@ -15,7 +15,7 @@ This modules aims to provide .
 	<dependency>
 		<groupId>com.namics.oss.spring.support.batch</groupId>
 		<artifactId>spring-batch-support</artifactId>
-		<version>1.0.0</version>
+		<version>1.1.0</version>
 	</dependency>
 	
 ### Requirements	
