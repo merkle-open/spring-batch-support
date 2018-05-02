@@ -1,0 +1,6 @@
+com.namics.oss.spring.support.batch.starter.sample
+com.namics.oss.spring.support.batch.starter.sample.config
+com.namics.oss.spring.support.batch.starter.sample.controller
+com.namics.oss.spring.support.batch.starter.sample.jobs
+com.namics.oss.spring.support.batch.starter.sample.service
+com.namics.oss.spring.support.batch.starter.sample.tasklet

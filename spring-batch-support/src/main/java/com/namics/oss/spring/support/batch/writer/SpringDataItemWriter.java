@@ -49,7 +49,7 @@ public class SpringDataItemWriter<T> implements ItemWriter<T> {
 				LOG.trace("write item {}", item);
 			}
 		}
-		this.repository.save(items);
+		this.repository.saveAll(items);
 	}
 
 }

@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>Job.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">spring-batch-support-starter</a> &gt; <a href="../index.html" class="el_bundle">spring-batch-support</a> &gt; <a href="index.source.html" class="el_package">com.namics.oss.spring.support.batch.model</a> &gt; <span class="el_source">Job.java</span></div><h1>Job.java</h1><pre class="source lang-java linenums">
+package com.namics.oss.spring.support.batch.model;
+
+import com.namics.oss.spring.support.batch.util.DateUtil;
+
+import java.util.Date;
+import java.util.List;
+
+/**
+ * Spring Batch job information.
+ *
+ * @author draymann, Namics AG
+ * lboesch, Namics AG
+ * @since Jun 3, 2013
+ */
+public class Job {
+	protected String name;
+	protected Date startTime;
+	protected Date endTime;
+	protected String status;
+	protected boolean running;
+	protected String exitStatus;
+	protected List&lt;Parameter&gt; jobParameters;
+	protected List&lt;SimpleStep&gt; steps;
+
+	/**
+	 * Creates a new job object with the name given.
+	 *
+	 * @param name .
+	 */
+<span class="nc" id="L31">	public Job(String name) {</span>
+<span class="nc" id="L32">		this.name = name;</span>
+<span class="nc" id="L33">	}</span>
+
+	public String getName() {
+<span class="nc" id="L36">		return name;</span>
+	}
+
+	public void setStartTime(Date startTime) {
+<span class="nc" id="L40">		this.startTime = startTime;</span>
+<span class="nc" id="L41">	}</span>
+
+	public Date getStartTime() {
+<span class="nc" id="L44">		return startTime;</span>
+	}
+
+	public String getStartTimeFormatted() {
+<span class="nc" id="L48">		return DateUtil.getDate(startTime);</span>
+	}
+
+	public void setEndTime(Date endTime) {
+<span class="nc" id="L52">		this.endTime = endTime;</span>
+<span class="nc" id="L53">	}</span>
+
+	public Date getEndTime() {
+<span class="nc" id="L56">		return endTime;</span>
+	}
+
+	public String getEndTimeFormatted() {
+<span class="nc" id="L60">		return DateUtil.getDate(endTime);</span>
+	}
+
+	public void setStatus(String status) {
+<span class="nc" id="L64">		this.status = status;</span>
+<span class="nc" id="L65">	}</span>
+
+	public String getStatus() {
+<span class="nc" id="L68">		return status;</span>
+	}
+
+	public void setRunning(boolean running) {
+<span class="nc" id="L72">		this.running = running;</span>
+<span class="nc" id="L73">	}</span>
+
+	public boolean isRunning() {
+<span class="nc" id="L76">		return running;</span>
+	}
+
+	public String getExitStatus() {
+<span class="nc" id="L80">		return exitStatus;</span>
+	}
+
+	public void setExitStatus(String exitStatus) {
+<span class="nc" id="L84">		this.exitStatus = exitStatus;</span>
+<span class="nc" id="L85">	}</span>
+
+	public List&lt;SimpleStep&gt; getSteps() {
+<span class="nc" id="L88">		return steps;</span>
+	}
+
+	public void setSteps(List&lt;SimpleStep&gt; steps) {
+<span class="nc" id="L92">		this.steps = steps;</span>
+<span class="nc" id="L93">	}</span>
+
+	public List&lt;Parameter&gt; getJobParameters() {
+<span class="nc" id="L96">		return jobParameters;</span>
+	}
+
+	public void setJobParameters(List&lt;Parameter&gt; jobParameters) {
+<span class="nc" id="L100">		this.jobParameters = jobParameters;</span>
+<span class="nc" id="L101">	}</span>
+
+	public String getDuration() {
+<span class="nc bnc" id="L104" title="All 2 branches missed.">		if (getStartTime() == null) {</span>
+<span class="nc" id="L105">			return &quot;&quot;;</span>
+		}
+<span class="nc" id="L107">		return DateUtil.getDuration(getStartTime(), getEndTime());</span>
+	}
+
+	public Job startTime(Date startTime) {
+<span class="nc" id="L111">		setStartTime(startTime);</span>
+<span class="nc" id="L112">		return this;</span>
+	}
+
+	public Job endTime(Date endTime) {
+<span class="nc" id="L116">		setEndTime(endTime);</span>
+<span class="nc" id="L117">		return this;</span>
+	}
+
+	public Job status(String status) {
+<span class="nc" id="L121">		setStatus(status);</span>
+<span class="nc" id="L122">		return this;</span>
+	}
+
+	public Job running(boolean running) {
+<span class="nc" id="L126">		setRunning(running);</span>
+<span class="nc" id="L127">		return this;</span>
+	}
+
+	public Job exitStatus(String exitStatus) {
+<span class="nc" id="L131">		setExitStatus(exitStatus);</span>
+<span class="nc" id="L132">		return this;</span>
+	}
+
+	public Job jobParameters(List&lt;Parameter&gt; jobParameters) {
+<span class="nc" id="L136">		setJobParameters(jobParameters);</span>
+<span class="nc" id="L137">		return this;</span>
+	}
+
+	public Job steps(List&lt;SimpleStep&gt; steps) {
+<span class="nc" id="L141">		setSteps(steps);</span>
+<span class="nc" id="L142">		return this;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.0.201801022044</span></div></body></html>
