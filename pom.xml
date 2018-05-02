@@ -488,6 +488,16 @@
 		<profile>
 			<id>site</id>
 			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>com.coderplus.maven.plugins</groupId>
+							<artifactId>copy-rename-maven-plugin</artifactId>
+							<version>1.0.1</version>
+							<inherited>false</inherited>
+						</plugin>
+					</plugins>
+				</pluginManagement>
 				<plugins>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
@@ -507,12 +517,14 @@
 							<execution>
 								<id>copy-readme-for-site</id>
 								<phase>pre-site</phase>
+								<inherited>false</inherited>
 								<goals>
 									<goal>copy</goal>
 								</goals>
 								<configuration>
 									<sourceFile>${project.basedir}/README.md</sourceFile>
 									<destinationFile>${project.basedir}/src/site/markdown/index.md</destinationFile>
+									<ignoreFileNotFoundOnIncremental>true</ignoreFileNotFoundOnIncremental>
 								</configuration>
 							</execution>
 						</executions>
@@ -571,6 +583,7 @@
 					<plugin>
 						<groupId>org.owasp</groupId>
 						<artifactId>dependency-check-maven</artifactId>
+						<version>3.1.2</version>
 						<configuration>
 							<goal>check</goal>
 						</configuration>
