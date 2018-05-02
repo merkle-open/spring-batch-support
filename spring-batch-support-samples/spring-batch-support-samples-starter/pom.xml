@@ -74,13 +74,6 @@
 			<artifactId>spring-boot-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<!-- remove this with spring 5.0.0 since SpringExtension is integrated there -->
-			<groupId>com.github.sbrannen</groupId>
-			<artifactId>spring-test-junit5</artifactId>
-			<scope>test</scope>
-		</dependency>
-
 	</dependencies>
 
 
