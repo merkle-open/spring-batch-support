@@ -1,5 +1,7 @@
 # Spring Batch Support
 
+[Project Documentation](http://namics.github.io/spring-batch-support)
+
 System        | Status
 --------------|------------------------------------------------        
 CI master     | [![Build Status][travis-master]][travis-url]
