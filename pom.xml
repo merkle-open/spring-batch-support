@@ -4,7 +4,7 @@
 
 	<groupId>com.namics.oss.spring.support.batch</groupId>
 	<artifactId>spring-batch-support-pom</artifactId>
-	<version>1.1.0</version>
+	<version>1.1.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>${project.artifactId}</name>
@@ -76,7 +76,7 @@
 
 		<spring.version>5.0.5.RELEASE</spring.version>
 		<spring-boot.version>2.0.1.RELEASE</spring-boot.version>
-		<spring.batch.version>4.0.1.RELEASE</spring.batch.version>
+		<spring.batch.version>4.1.0.RC1</spring.batch.version>
 		<spring.data.release.train.version>Kay-SR6</spring.data.release.train.version>
 		<jacoco.version>0.8.0</jacoco.version>
 	</properties>
@@ -482,6 +482,10 @@
 			<releases>
 				<enabled>false</enabled>
 			</releases>
+		</repository>
+		<repository>
+			<id>spring-milestones</id>
+			<url>https://repo.spring.io/milestone</url>
 		</repository>
 	</repositories>
 
