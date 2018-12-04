@@ -5,11 +5,11 @@ spring-batch-support-samples-web/spring-batch-support,com.namics.oss.spring.supp
 spring-batch-support-samples-web/spring-batch-support,com.namics.oss.spring.support.batch.service.impl,JobServiceImpl,479,31,19,1,90,11,18,3,8,3
 spring-batch-support-samples-web/spring-batch-support,com.namics.oss.spring.support.batch.service.impl,BatchCleanupServiceImpl.JobExecution,15,0,0,0,6,0,3,0,3,0
 spring-batch-support-samples-web/spring-batch-support,com.namics.oss.spring.support.batch.writer,SpringDataItemWriter,52,0,6,0,12,0,6,0,3,0
-spring-batch-support-samples-web/spring-batch-support,com.namics.oss.spring.support.batch.config,TaskExecutorBatchConfigurer,30,0,0,0,10,0,3,0,3,0
+spring-batch-support-samples-web/spring-batch-support,com.namics.oss.spring.support.batch.config,TaskExecutorBatchConfigurer,36,0,0,0,13,0,4,0,4,0
 spring-batch-support-samples-web/spring-batch-support,com.namics.oss.spring.support.batch.config,BatchConfig,46,0,0,0,13,0,4,0,4,0
-spring-batch-support-samples-web/spring-batch-support,com.namics.oss.spring.support.batch.handler.impl,FailedJobExecutionLoggerHandler,14,0,0,0,5,0,4,0,4,0
 spring-batch-support-samples-web/spring-batch-support,com.namics.oss.spring.support.batch.tasklet,SpringBatchDatabaseCleanUpTasklet.JobExecution,15,0,0,0,6,0,3,0,3,0
 spring-batch-support-samples-web/spring-batch-support,com.namics.oss.spring.support.batch.tasklet,SpringBatchDatabaseCleanUpTasklet,214,0,8,0,32,0,10,0,6,0
+spring-batch-support-samples-web/spring-batch-support,com.namics.oss.spring.support.batch.handler.impl,FailedJobExecutionLoggerHandler,14,0,0,0,5,0,4,0,4,0
 spring-batch-support-samples-web/spring-batch-support,com.namics.oss.spring.support.batch.util,DateUtil,12,68,3,1,4,20,4,4,2,4
 spring-batch-support-samples-web/spring-batch-support,com.namics.oss.spring.support.batch.model,ParameterType,39,0,0,0,4,0,2,0,2,0
 spring-batch-support-samples-web/spring-batch-support,com.namics.oss.spring.support.batch.model,SimpleStep,184,0,2,0,72,0,45,0,44,0

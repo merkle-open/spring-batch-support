@@ -26,11 +26,13 @@
 <a class="jxr_linenumber" name="L18" href="#L18">18</a>  <em class="jxr_javadoccomment"> */</em>
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>  @Configuration
 <a class="jxr_linenumber" name="L20" href="#L20">20</a>  @EnableScheduling
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  @Import(value = { DataSourceConfig.<strong class="jxr_keyword">class</strong>, BatchConfig.<strong class="jxr_keyword">class</strong>, SpringBatchFactoryConfiguration.<strong class="jxr_keyword">class</strong>, SpringBatchSupportWebServletConfig.<strong class="jxr_keyword">class</strong> })
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../../../../com/namics/oss/spring/support/batch/demo/config/WebAppConfig.html">WebAppConfig</a> {
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>  
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  }
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <em class="jxr_comment">// Make sure DataSourceConfig with transactionManager bean configuration is loaded after BatchConfig.</em>
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <em class="jxr_comment">// Otherwise the transactionManager Bean configuration in AbstractBatchConfiguration overrides the Bean definition which can lead to a circular reference.</em>
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  @Import(value = {BatchConfig.<strong class="jxr_keyword">class</strong>, DataSourceConfig.<strong class="jxr_keyword">class</strong>, SpringBatchFactoryConfiguration.<strong class="jxr_keyword">class</strong>, SpringBatchSupportWebServletConfig.<strong class="jxr_keyword">class</strong>})
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../../../../com/namics/oss/spring/support/batch/demo/config/WebAppConfig.html">WebAppConfig</a> {
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2018 <a href="http://www.namics.com">Namics AG</a>. All rights reserved.</div>
