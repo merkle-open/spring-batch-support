@@ -18,7 +18,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  */
 @Configuration
 @EnableScheduling
-@Import(value = { DataSourceConfig.class, BatchConfig.class, SpringBatchFactoryConfiguration.class, SpringBatchSupportWebServletConfig.class })
+// Make sure DataSourceConfig with transactionManager bean configuration is loaded after BatchConfig.
+// Otherwise the transactionManager Bean configuration in AbstractBatchConfiguration overrides the Bean definition which can lead to a circular reference.
+@Import(value = {BatchConfig.class, DataSourceConfig.class, SpringBatchFactoryConfiguration.class, SpringBatchSupportWebServletConfig.class})
 public class WebAppConfig {
 
 
