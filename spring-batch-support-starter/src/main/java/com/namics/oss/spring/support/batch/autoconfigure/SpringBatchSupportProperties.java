@@ -90,6 +90,14 @@ public class SpringBatchSupportProperties {
 		public void setServletMapping(String servletMapping) {
 			this.servletMapping = servletMapping;
 		}
+
+		public boolean isDarkMode() {
+			return darkMode;
+		}
+
+		public void setDarkMode(boolean darkMode) {
+			this.darkMode = darkMode;
+		}
 	}
 
 	public static class CleanUp {

@@ -54,7 +54,7 @@ public class SpringDataPagingItemReader<T> extends AbstractPagingItemReader<T> {
 		} else {
 			this.results.clear();
 		}
-		Page<T> page = repository.findAll(new PageRequest(getPage(), getPageSize()));
+		Page<T> page = repository.findAll(PageRequest.of(getPage(), getPageSize()));
 		if (LOG.isInfoEnabled() && page.iterator().hasNext()) {
 			T item = page.iterator().next();
 			currentItemClass = (Class<T>) item.getClass();
