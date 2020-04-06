@@ -35,11 +35,12 @@ Set the package, where your batch jobs were configured. This property is require
     com.namics.oss.spring.support.batch.job-configuration.package-name=com.namics.your-project.jobs
 
 ### Configuration of the web interface
-The starter allows you to override the default settings for servlet-name and servlet-mapping.
+The starter allows you to override the default settings for servlet-name and servlet-mapping. You could also enable a dark mode.
 
     # Optional properties for spring-batch-web
     com.namics.oss.spring.support.batch.web.servlet-name=springBatch
-    com.namics.oss.spring.support.batch.web.servlet-mapping=/batch/*
+    com.namics.oss.spring.support.batch.web.servlet-mapping=/batch/*   
+    com.namics.oss.spring.support.batch.web.dark-mode=true
     
 ## Step 3: Enable cleanup scheduled method
 
