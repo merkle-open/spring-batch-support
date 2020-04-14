@@ -75,6 +75,11 @@ public class SpringBatchSupportProperties {
 		 */
 		private String servletMapping;
 
+		/**
+		 * if darkmode is enabled in ui.
+		 */
+		private boolean darkMode = false;
+
 		public String getServletName() {
 			return servletName;
 		}
@@ -89,6 +94,14 @@ public class SpringBatchSupportProperties {
 
 		public void setServletMapping(String servletMapping) {
 			this.servletMapping = servletMapping;
+		}
+
+		public boolean isDarkMode() {
+			return darkMode;
+		}
+
+		public void setDarkMode(boolean darkMode) {
+			this.darkMode = darkMode;
 		}
 	}
 

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.namics.oss.spring.support.batch</groupId>
 	<artifactId>spring-batch-support-pom</artifactId>
-	<version>1.1.1</version>
+	<version>1.2.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>${project.artifactId}</name>
@@ -74,10 +75,10 @@
 
 		<sonar.language>java</sonar.language>
 
-		<spring.version>5.0.5.RELEASE</spring.version>
-		<spring-boot.version>2.0.1.RELEASE</spring-boot.version>
-		<spring.batch.version>4.1.0.RC1</spring.batch.version>
-		<spring.data.release.train.version>Kay-SR6</spring.data.release.train.version>
+		<spring.version>5.2.5.RELEASE</spring.version>
+		<spring-boot.version>2.2.6.RELEASE</spring-boot.version>
+		<spring.batch.version>4.2.2.RELEASE</spring.batch.version>
+		<spring.data.release.train.version>Moore-SR6</spring.data.release.train.version>
 		<jacoco.version>0.8.0</jacoco.version>
 	</properties>
 

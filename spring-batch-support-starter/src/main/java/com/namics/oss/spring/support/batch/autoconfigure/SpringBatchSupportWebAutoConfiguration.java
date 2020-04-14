@@ -46,6 +46,11 @@ public class SpringBatchSupportWebAutoConfiguration {
 		return registrationBean;
 	}
 
+	@Bean("springBatchSupportViewMode")
+	public String springBatchSupportViewMode() {
+		return getIsDarkModeEnabled() ? "darkMode" : "default";
+	}
+
 	protected String getServletMapping() {
 		if (hasText(springBatchSupportProperties.getWeb().getServletMapping())) {
 			return springBatchSupportProperties.getWeb().getServletMapping();
@@ -58,6 +63,10 @@ public class SpringBatchSupportWebAutoConfiguration {
 			return springBatchSupportProperties.getWeb().getServletName();
 		}
 		return defaultServletName;
+	}
+
+	protected boolean getIsDarkModeEnabled() {
+		return springBatchSupportProperties.getWeb().isDarkMode();
 	}
 
 
