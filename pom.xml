@@ -9,8 +9,8 @@
 	<packaging>pom</packaging>
 
 	<name>${project.artifactId}</name>
-	<description>Namics Spring Batch Support Library aims to provide some sugar to use spring-batch.</description>
-	<url>https://github.com/namics/spring-batch-support</url>
+	<description>Spring Batch Support Library aims to provide some sugar to use spring-batch.</description>
+	<url>https://github.com/merkle-open/spring-batch-support</url>
 
 	<licenses>
 		<license>
@@ -20,73 +20,30 @@
 		</license>
 	</licenses>
 
-	<organization>
-		<name>Namics AG</name>
-		<url>http://www.namics.com</url>
-	</organization>
-
-	<developers>
-		<developer>
-			<id>aschaefer</id>
-			<name>André Schäfer</name>
-			<email>andre.schaefer@namics.com</email>
-			<organization>Namics AG</organization>
-			<roles>
-				<role>Developer</role>
-			</roles>
-		</developer>
-		<developer>
-			<id>lboesch</id>
-			<name>Lorenz Bösch</name>
-			<email>lorenz.boesch@namics.com</email>
-			<organization>Namics AG</organization>
-			<roles>
-				<role>Developer</role>
-			</roles>
-		</developer>
-		<developer>
-			<id>jdato</id>
-			<name>Johannes Dato</name>
-			<email>johannes.dato@namics.com</email>
-			<organization>Namics AG</organization>
-			<roles>
-				<role>Developer</role>
-			</roles>
-		</developer>
-	</developers>
-
 	<properties>
-		<java.version>1.8</java.version>
-		<java.source.version>${java.version}</java.source.version>
-		<java.target.version>${java.version}</java.target.version>
-		<maven.compiler.source>${java.version}</maven.compiler.source>
-		<maven.compiler.target>${java.version}</maven.compiler.target>
-		<main.basedir>${project.basedir}</main.basedir>
-
+		<java.version>21</java.version>
+		<encoding>UTF-8</encoding>
 		<maven.build.timestamp.format>yyyy-MM-dd-z-HH-mm-ss</maven.build.timestamp.format>
 
-		<encoding>UTF-8</encoding>
-		<project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
+		<!-- Other (check for new versions:  mvn versions:display-property-updates )-->
+		<spring.version>6.2.3</spring.version>
+		<spring-boot.version>3.4.2</spring-boot.version>
+		<spring.batch.version>5.2.1</spring.batch.version>
+		<spring.data.release.train.version>1.4.6.RELEASE</spring.data.release.train.version>
 
-		<git.build.time>${maven.build.timestamp}</git.build.time>
-		<git.branch>unknown</git.branch>
-		<git.commit.id>unknown</git.commit.id>
-		<git.commit.time>unknown</git.commit.time>
-
-		<sonar.language>java</sonar.language>
-
-		<spring.version>5.2.5.RELEASE</spring.version>
-		<spring-boot.version>2.2.6.RELEASE</spring-boot.version>
-		<spring.batch.version>4.2.2.RELEASE</spring.batch.version>
-		<spring.data.release.train.version>Moore-SR6</spring.data.release.train.version>
-		<jacoco.version>0.8.0</jacoco.version>
+		<!-- Maven Plugins -->
+		<mvn.compiler.plugin.version>3.13.0</mvn.compiler.plugin.version>
+		<mvn.source.plugin.version>3.3.1</mvn.source.plugin.version>
+		<mvn.surefire.plugin.version>3.5.2</mvn.surefire.plugin.version>
+		<mvn.javadoc.version>3.5.0</mvn.javadoc.version>
+		<mvn.gpg.plugin.version>3.0.1</mvn.gpg.plugin.version>
+		<mvn.nexus-staging.plugin.version>1.6.13</mvn.nexus-staging.plugin.version>
+		<mvn.plugin.version>3.9.0</mvn.plugin.version>
 	</properties>
 
 	<modules>
 		<module>spring-batch-support</module>
 		<module>spring-batch-support-web</module>
-		<module>spring-batch-support-starter</module>
-		<module>spring-batch-support-samples</module>
 	</modules>
 
 	<dependencyManagement>
@@ -116,22 +73,6 @@
 				<groupId>com.namics.oss.spring.support.batch</groupId>
 				<artifactId>spring-batch-support-samples-starter</artifactId>
 				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.namics.oss.spring.convert</groupId>
-				<artifactId>spring-convert</artifactId>
-				<version>1.0.0</version>
-			</dependency>
-			<dependency>
-				<groupId>com.namics.oss</groupId>
-				<artifactId>java-random</artifactId>
-				<version>1.1.5</version>
-			</dependency>
-
-			<dependency>
-				<groupId>joda-time</groupId>
-				<artifactId>joda-time</artifactId>
-				<version>2.9.4</version>
 			</dependency>
 
 			<!-- Spring -->
@@ -165,13 +106,11 @@
 				<artifactId>spring-context-support</artifactId>
 				<version>${spring.version}</version>
 			</dependency>
-
 			<dependency>
 				<groupId>org.springframework.batch</groupId>
 				<artifactId>spring-batch-core</artifactId>
 				<version>${spring.batch.version}</version>
 			</dependency>
-
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-jdbc</artifactId>
@@ -182,28 +121,12 @@
 				<artifactId>spring-orm</artifactId>
 				<version>${spring.version}</version>
 			</dependency>
-
 			<dependency>
 				<groupId>org.springframework.data</groupId>
 				<artifactId>spring-data-releasetrain</artifactId>
 				<version>${spring.data.release.train.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
-			</dependency>
-
-			<!--spring boot -->
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-starter</artifactId>
-				<version>${spring-boot.version}</version>
-				<optional>true</optional>
-			</dependency>
-
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-autoconfigure</artifactId>
-				<version>${spring-boot.version}</version>
-				<optional>true</optional>
 			</dependency>
 
 			<dependency>
@@ -213,94 +136,10 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-
-
 			<dependency>
-				<groupId>commons-io</groupId>
-				<artifactId>commons-io</artifactId>
-				<version>2.5</version>
-			</dependency>
-			<dependency>
-				<groupId>commons-dbcp</groupId>
-				<artifactId>commons-dbcp</artifactId>
-				<version>1.4</version>
-			</dependency>
-
-			<!-- Jackson JSON Mapper -->
-			<dependency>
-				<groupId>com.fasterxml.jackson.core</groupId>
-				<artifactId>jackson-core</artifactId>
-				<version>2.9.5</version>
-			</dependency>
-			<dependency>
-				<groupId>com.fasterxml.jackson.core</groupId>
-				<artifactId>jackson-databind</artifactId>
-				<version>2.9.5</version>
-			</dependency>
-
-			<!-- JavaX -->
-			<dependency>
-				<groupId>javax.servlet</groupId>
-				<artifactId>javax.servlet-api</artifactId>
-				<version>3.1.0</version>
-				<scope>provided</scope>
-			</dependency>
-			<dependency>
-				<!-- @Inject -->
-				<groupId>javax.inject</groupId>
-				<artifactId>javax.inject</artifactId>
-				<version>1</version>
-			</dependency>
-
-
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-api</artifactId>
-				<version>1.7.21</version>
-			</dependency>
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-simple</artifactId>
-				<version>1.7.21</version>
-				<scope>test</scope>
-			</dependency>
-
-			<dependency>
-				<groupId>net.sf.ehcache</groupId>
-				<artifactId>ehcache</artifactId>
-				<version>2.10.2.2.21</version>
-			</dependency>
-
-			<!-- JUnit -->
-			<dependency>
-				<groupId>org.junit.jupiter</groupId>
-				<artifactId>junit-jupiter-api</artifactId>
-				<version>5.0.1</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-test</artifactId>
-				<version>${spring.version}</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.easymock</groupId>
-				<artifactId>easymock</artifactId>
-				<version>3.4</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.hamcrest</groupId>
-				<artifactId>hamcrest-core</artifactId>
-				<version>1.3</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.hamcrest</groupId>
-				<artifactId>hamcrest-library</artifactId>
-				<version>1.3</version>
-				<scope>test</scope>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-autoconfigure</artifactId>
+				<version>${spring-boot.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -330,126 +169,33 @@
 		</resources>
 		<plugins>
 			<plugin>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.19.1</version>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${mvn.compiler.plugin.version}</version>
 				<configuration>
-					<properties>
-						<excludeTags>remoteIntegration, manually</excludeTags>
-					</properties>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
 				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>org.junit.platform</groupId>
-						<artifactId>junit-platform-surefire-provider</artifactId>
-						<version>1.0.1</version>
-					</dependency>
-					<dependency>
-						<groupId>org.junit.jupiter</groupId>
-						<artifactId>junit-jupiter-engine</artifactId>
-						<version>5.0.1</version>
-					</dependency>
-				</dependencies>
 			</plugin>
 			<plugin>
-				<groupId>pl.project13.maven</groupId>
-				<artifactId>git-commit-id-plugin</artifactId>
-				<version>2.2.1</version>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>${mvn.source.plugin.version}</version>
 				<executions>
 					<execution>
-						<phase>validate</phase>
+						<id>attach-sources</id>
 						<goals>
-							<goal>revision</goal>
+							<goal>jar-no-fork</goal>
 						</goals>
 					</execution>
 				</executions>
-				<configuration>
-					<prefix>git</prefix>
-					<dateFormat>${maven.build.timestamp.format}</dateFormat>
-					<verbose>false</verbose>
-					<skipPoms>true</skipPoms>
-					<generateGitPropertiesFile>false</generateGitPropertiesFile>
-					<failOnNoGitDirectory>false</failOnNoGitDirectory>
-					<skip>false</skip>
-					<gitDescribe>
-						<skip>false</skip>
-						<always>false</always>
-						<abbrev>7</abbrev>
-						<dirty>-dirty</dirty>
-						<forceLongFormat>true</forceLongFormat>
-					</gitDescribe>
-				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.0.2</version>
-				<configuration>
-					<archive>
-						<manifest>
-							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-						</manifest>
-						<manifestEntries>
-							<Build-Timestamp>${git.build.time}</Build-Timestamp>
-							<Build-SCM-Branch>${git.branch}</Build-SCM-Branch>
-							<Build-SCM-Commit>${git.commit.id}</Build-SCM-Commit>
-							<Build-SCM-Commit-Time>${git.commit.time}</Build-SCM-Commit-Time>
-						</manifestEntries>
-					</archive>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.6.0</version>
-				<configuration>
-					<encoding>${project.build.sourceEncoding}</encoding>
-					<source>${java.source.version}</source>
-					<target>${java.source.version}</target>
-					<compilerArguments>
-						<proc:none />
-						<parameters/>
-					</compilerArguments>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>versions-maven-plugin</artifactId>
-				<version>2.3</version>
-				<configuration>
-					<generateBackupPoms>false</generateBackupPoms>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>3.0.0</version>
-				<configuration>
-					<resourceEncoding>${project.build.sourceEncoding}</resourceEncoding>
-					<failOnMissingWebXml>false</failOnMissingWebXml>
-				</configuration>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${mvn.surefire.plugin.version}</version>
 			</plugin>
 		</plugins>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>3.0.0</version>
-					<configuration>
-						<failOnError>false</failOnError>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-source-plugin</artifactId>
-					<version>3.0.1</version>
-				</plugin>
-				<plugin>
-					<groupId>pl.project13.maven</groupId>
-					<artifactId>git-commit-id-plugin</artifactId>
-					<version>2.2.1</version>
-				</plugin>
-			</plugins>
-		</pluginManagement>
 	</build>
 
 	<distributionManagement>
@@ -461,10 +207,6 @@
 			<id>ossrh</id>
 			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
-		<site>
-			<id>localSite</id>
-			<url>file:${main.basedir}/docs</url>
-		</site>
 	</distributionManagement>
 
 	<scm>
@@ -473,217 +215,15 @@
 		<developerConnection>scm:git:git@github.com:namics/spring-batch-support.git</developerConnection>
 	</scm>
 
-	<repositories>
-		<repository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-		</repository>
-		<repository>
-			<id>spring-milestones</id>
-			<url>https://repo.spring.io/milestone</url>
-		</repository>
-	</repositories>
-
 	<profiles>
 		<profile>
-			<id>site</id>
-			<build>
-				<pluginManagement>
-					<plugins>
-						<plugin>
-							<groupId>com.coderplus.maven.plugins</groupId>
-							<artifactId>copy-rename-maven-plugin</artifactId>
-							<version>1.0.1</version>
-							<inherited>false</inherited>
-						</plugin>
-					</plugins>
-				</pluginManagement>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-pmd-plugin</artifactId>
-						<version>3.9.0</version>
-					</plugin>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>findbugs-maven-plugin</artifactId>
-						<version>3.0.5</version>
-					</plugin>
-					<plugin>
-						<groupId>com.coderplus.maven.plugins</groupId>
-						<artifactId>copy-rename-maven-plugin</artifactId>
-						<version>1.0.1</version>
-						<executions>
-							<execution>
-								<id>copy-readme-for-site</id>
-								<phase>pre-site</phase>
-								<inherited>false</inherited>
-								<goals>
-									<goal>copy</goal>
-								</goals>
-								<configuration>
-									<sourceFile>${project.basedir}/README.md</sourceFile>
-									<destinationFile>${project.basedir}/src/site/markdown/index.md</destinationFile>
-									<ignoreFileNotFoundOnIncremental>true</ignoreFileNotFoundOnIncremental>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.jacoco</groupId>
-						<artifactId>jacoco-maven-plugin</artifactId>
-						<version>${jacoco.version}</version>
-						<executions>
-							<execution>
-								<goals>
-									<goal>prepare-agent</goal>
-								</goals>
-							</execution>
-							<execution>
-								<id>report</id>
-								<phase>prepare-package</phase>
-								<goals>
-									<goal>report</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-site-plugin</artifactId>
-						<version>3.7.1</version>
-						<executions>
-							<execution>
-								<id>attach-descriptor</id>
-								<goals>
-									<goal>attach-descriptor</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>pl.project13.maven</groupId>
-						<artifactId>git-commit-id-plugin</artifactId>
-					</plugin>
-					<plugin>
-						<artifactId>maven-source-plugin</artifactId>
-					</plugin>
-				</plugins>
-			</build>
-			<reporting>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-project-info-reports-plugin</artifactId>
-						<version>2.9</version>
-						<configuration>
-							<dependencyLocationsEnabled>false</dependencyLocationsEnabled>
-						</configuration>
-					</plugin>
-					<plugin>
-						<groupId>org.owasp</groupId>
-						<artifactId>dependency-check-maven</artifactId>
-						<version>3.1.2</version>
-						<configuration>
-							<goal>check</goal>
-						</configuration>
-						<reportSets>
-							<reportSet>
-								<id>aggregate</id>
-								<inherited>false</inherited>
-								<reports>
-									<report>aggregate</report>
-								</reports>
-							</reportSet>
-						</reportSets>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-jxr-plugin</artifactId>
-						<version>2.5</version>
-						<reportSets>
-							<reportSet>
-								<id>aggregate</id>
-								<inherited>false</inherited>
-								<reports>
-									<report>aggregate</report>
-								</reports>
-							</reportSet>
-						</reportSets>
-					</plugin>
-					<plugin>
-						<groupId>org.jacoco</groupId>
-						<artifactId>jacoco-maven-plugin</artifactId>
-						<version>${jacoco.version}</version>
-					</plugin>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>versions-maven-plugin</artifactId>
-						<reportSets>
-							<reportSet>
-								<reports>
-									<report>dependency-updates-report</report>
-									<report>plugin-updates-report</report>
-								</reports>
-							</reportSet>
-						</reportSets>
-					</plugin>
-					<plugin>
-						<artifactId>maven-javadoc-plugin</artifactId>
-						<reportSets>
-							<reportSet>
-								<id>non-aggregate</id>
-								<reports>
-									<report>javadoc</report>
-								</reports>
-							</reportSet>
-							<reportSet>
-								<id>aggregate</id>
-								<reports>
-									<report>aggregate</report>
-								</reports>
-							</reportSet>
-						</reportSets>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-surefire-report-plugin</artifactId>
-						<configuration>
-							<aggregate>true</aggregate>
-							<outputName>Test Report</outputName>
-						</configuration>
-					</plugin>
-				</plugins>
-			</reporting>
-		</profile>
-
-
-		<profile>
-			<id>ossrh</id>
+			<id>deploy</id>
 			<build>
 				<plugins>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-javadoc-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>attach-javadocs</id>
-								<goals>
-									<goal>jar</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-source-plugin</artifactId>
-						<version>3.0.1</version>
+						<version>${mvn.source.plugin.version}</version>
 						<executions>
 							<execution>
 								<id>attach-sources</id>
@@ -695,8 +235,24 @@
 					</plugin>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>${mvn.javadoc.version}</version>
+						<configuration>
+							<failOnError>false</failOnError>
+						</configuration>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<version>1.6</version>
+						<version>${mvn.gpg.plugin.version}</version>
 						<executions>
 							<execution>
 								<id>sign-artifacts</id>
@@ -704,13 +260,20 @@
 								<goals>
 									<goal>sign</goal>
 								</goals>
+								<configuration>
+									<!-- Prevent `gpg` from using pinentry programs -->
+									<gpgArguments>
+										<arg>--pinentry-mode</arg>
+										<arg>loopback</arg>
+									</gpgArguments>
+								</configuration>
 							</execution>
 						</executions>
 					</plugin>
 					<plugin>
 						<groupId>org.sonatype.plugins</groupId>
 						<artifactId>nexus-staging-maven-plugin</artifactId>
-						<version>1.6.8</version>
+						<version>${mvn.nexus-staging.plugin.version}</version>
 						<extensions>true</extensions>
 						<configuration>
 							<serverId>ossrh</serverId>

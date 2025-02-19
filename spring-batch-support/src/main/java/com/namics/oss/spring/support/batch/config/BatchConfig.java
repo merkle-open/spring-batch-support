@@ -4,24 +4,16 @@
 
 package com.namics.oss.spring.support.batch.config;
 
-import com.namics.oss.spring.support.batch.service.JobService;
-import com.namics.oss.spring.support.batch.service.impl.JobServiceImpl;
-import org.springframework.batch.core.configuration.JobRegistry;
-import org.springframework.batch.core.configuration.ListableJobLocator;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
-import org.springframework.batch.core.explore.JobExplorer;
-import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.batch.core.launch.JobOperator;
-import org.springframework.batch.core.launch.support.SimpleJobOperator;
-import org.springframework.batch.core.repository.JobRepository;
-import org.springframework.batch.core.repository.support.JobRepositoryFactoryBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.transaction.PlatformTransactionManager;
+import java.time.ZoneId;
 
-import javax.inject.Inject;
-import javax.sql.DataSource;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.TaskExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 /**
  * BatchConfig.
@@ -30,40 +22,28 @@ import javax.sql.DataSource;
  * @since 25.02.14
  */
 @Configuration
-@Import(TaskExecutorBatchConfigurer.class)
-@EnableBatchProcessing(modular = true)
+@ComponentScan(
+        basePackages = {
+                "com.namics.oss.spring.support.batch",
+        },
+        includeFilters = {
+                @ComponentScan.Filter(Component.class),
+                @ComponentScan.Filter(Service.class),
+                @ComponentScan.Filter(Repository.class),
+        }
+)
 public class BatchConfig {
 
-	@Inject
-	protected PlatformTransactionManager transactionManager;
+    @Bean
+    public TaskExecutor taskExecutor() {
+        ThreadPoolTaskScheduler threadPoolTaskScheduler = new ThreadPoolTaskScheduler();
+        threadPoolTaskScheduler.setPoolSize(10);
+        threadPoolTaskScheduler.afterPropertiesSet();
+        return threadPoolTaskScheduler;
+    }
 
-	@Bean
-	public JobRepository batchSimpleJobRepository(DataSource dataSource) throws Exception {
-		JobRepositoryFactoryBean factory = new JobRepositoryFactoryBean();
-		factory.setDataSource(dataSource);
-		factory.setTransactionManager(transactionManager);
-		factory.afterPropertiesSet();
-		return factory.getObject();
-	}
-
-	@Bean
-	public JobOperator jobOperator(JobExplorer jobExplorer, JobLauncher jobLauncher, ListableJobLocator jobRegistry, JobRepository jobRepository) throws Exception {
-		SimpleJobOperator jobOperator = new SimpleJobOperator();
-		jobOperator.setJobExplorer(jobExplorer);
-		jobOperator.setJobLauncher(jobLauncher);
-		jobOperator.setJobRegistry(jobRegistry);
-		jobOperator.setJobRepository(jobRepository);
-		return jobOperator;
-	}
-
-	@Bean
-	public JobService jobService(JobOperator batchJobOperator,
-	                             JobRegistry batchJobRegistry,
-	                             JobExplorer jobExplorer,
-	                             JobLauncher jobLauncher,
-	                             JobRepository jobRepository) throws Exception {
-		return new JobServiceImpl(jobExplorer, batchJobOperator, jobLauncher, batchJobRegistry, jobRepository);
-	}
-
-
+    @Bean
+    public ZoneId fallbackZoneId() {
+        return ZoneId.systemDefault();
+    }
 }

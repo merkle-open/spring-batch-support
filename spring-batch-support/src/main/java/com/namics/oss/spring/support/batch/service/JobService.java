@@ -1,71 +1,183 @@
-
 package com.namics.oss.spring.support.batch.service;
 
+import com.namics.oss.spring.support.batch.converter.JobExecutionToJobConverter;
 
-import com.namics.oss.spring.support.batch.model.Job;
-import org.springframework.batch.core.JobParameters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.*;
+import org.springframework.batch.core.configuration.JobRegistry;
+import org.springframework.batch.core.explore.JobExplorer;
+import org.springframework.batch.core.launch.*;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.repository.JobRestartException;
+import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.*;
+
+import static org.springframework.util.CollectionUtils.isEmpty;
+
+import jakarta.inject.Inject;
 
 /**
- * Manages Spring batch jobs.
+ * Default implementation.
+ * used to start/stop jobs without knowing of the specific spring batch job repo/launcher classes. adds timestamp to each job as param to ensure uniqueness.
  *
- * @author draymann, Namics AG
- * lboesch, Namics AG
- * @since Jun 3, 2013
+ * @author lboesch, Namics AG
+ * @since Jan 10, 2013
  */
-public interface JobService {
+@Component
+public class JobService {
+	private static final Logger LOG = LoggerFactory.getLogger(JobService.class);
+	public static final String EXECUTION_TIMESTAMP = "executionTimestamp";
+
+	private final JobExplorer jobExplorer;
+	private final JobOperator jobOperator;
+	private final JobLauncher jobLauncher;
+	private final JobRegistry jobRegistry;
+	private final JobRepository jobRepository;
+    private final JobExecutionToJobConverter jobExecutionToJobConverter;
+
+	@Inject
+    public JobService(
+			final JobExplorer jobExplorer,
+			final JobOperator jobOperator,
+			final JobLauncher jobLauncher,
+			final JobRegistry jobRegistry,
+			final JobRepository jobRepository,
+			final JobExecutionToJobConverter jobExecutionToJobConverter
+	) {
+		this.jobExplorer = jobExplorer;
+		this.jobOperator = jobOperator;
+		this.jobLauncher = jobLauncher;
+		this.jobRegistry = jobRegistry;
+		this.jobRepository = jobRepository;
+        this.jobExecutionToJobConverter = jobExecutionToJobConverter;
+    }
+
+	public List<com.namics.oss.spring.support.batch.model.Job> getJobs() {
+		return jobOperator.getJobNames()
+				.stream()
+				.map(this::getJobOfJobName)
+				.toList();
+	}
+
+	public com.namics.oss.spring.support.batch.model.Job getJob(String jobName) {
+		return getJobOfJobName(jobName);
+	}
 
 	/**
-	 * Lists all registered jobs.
+	 * returns the job with the last execution
 	 *
-	 * @return a list containing all registered jobs
+	 * @param jobName name of the job
+	 * @return job with latest execution
 	 */
-	List<Job> getJobs();
+	protected com.namics.oss.spring.support.batch.model.Job getJobOfJobName(String jobName) {
+		JobExecution execution = getLatestJobExecution(jobName);
+		if (execution != null) {
+			return jobExecutionToJobConverter.convert(execution);
+		}
+		return new com.namics.oss.spring.support.batch.model.Job(jobName);
+	}
 
 	/**
-	 * Get job for jobname
+	 * get latest execution for a job with the given name.
 	 *
-	 * @param jobName the name of the job
-	 * @return registered job
+	 * @param jobName name of the job
+	 * @return latest execution
 	 */
-	Job getJob(String jobName);
+	protected JobExecution getLatestJobExecution(String jobName) {
+		try {
+			List<Long> jobInstances = jobOperator.getJobInstances(jobName, 0, 1); //todo expensive query!
+			if (isEmpty(jobInstances)) {
+				return null;
+			}
+			Long jobInstanceId = jobInstances.getFirst();
+			JobInstance jobInstance = jobExplorer.getJobInstance(jobInstanceId);
+			if (jobInstance == null) {
+				return null;
+			}
+			List<JobExecution> jobExecutions = jobExplorer.getJobExecutions(jobInstance);
+			if (isEmpty(jobExecutions)) {
+				return null;
+			}
+			return jobExecutions.getFirst();
+		} catch (NoSuchJobException e) {
+			return null;
+		}
 
-	/**
-	 * Starts a specific job.
-	 *
-	 * @param jobName the name of the job to start
-	 */
-	void startJob(String jobName);
+	}
 
-	/**
-	 * Starts a specific job with the given params.
-	 *
-	 * @param jobName       the name of the job to start
-	 * @param jobParameters the parameters for the job
-	 */
-	void startJob(String jobName, JobParameters jobParameters);
+	public void stopJob(String jobName) {
+		JobExecution execution = getLatestJobExecution(jobName);
+		if (execution != null) {
+			try {
+				jobOperator.stop(execution.getId());
+			} catch (NoSuchJobExecutionException e) {
+				LOG.error("there's no job execution for job " + jobName, e);
+			} catch (JobExecutionNotRunningException e) {
+				LOG.warn("can't stop job, is not running", e);
+			}
+		}
+	}
 
-	/**
-	 * Stops a specific job.
-	 *
-	 * @param jobName .
-	 */
-	void stopJob(String jobName);
+	public void abandonJob(String jobName) {
+		JobExecution execution = getLatestJobExecution(jobName);
+		if (execution != null) {
+			execution.upgradeStatus(BatchStatus.ABANDONED);
+			execution.setEndTime(LocalDateTime.now());
+			jobRepository.update(execution);
+		}
+	}
 
-	/**
-	 * Abandons a job.
-	 *
-	 * @param jobName .
-	 */
-	void abandonJob(String jobName);
+	public void startJob(String jobName) {
+		startJob(jobName, new JobParameters());
+	}
 
-	/**
-	 * Starts a new job instance.
-	 * use JobParametersIncrementer to change job parameters.
-	 * it's possible to start two job instances on the same time, take care!
-	 *
-	 * @param name job name
-	 */
-	void startNextInstance(String name);
+	public void startJob(String jobName, JobParameters jobParameters) {
+		JobExecution jobExecution = getLatestJobExecution(jobName);
+
+		if (jobExecution != null && jobExecution.getStatus().isRunning()) {
+			LOG.info("the job {} is already running", jobName);
+			return;
+		}
+
+		JobParametersBuilder builder = new JobParametersBuilder(jobParameters);
+		Date executionTimestamp = Calendar.getInstance().getTime();
+		builder.addDate(EXECUTION_TIMESTAMP, executionTimestamp);
+		try {
+			jobLauncher.run(jobRegistry.getJob(jobName), builder.toJobParameters());
+		} catch (NoSuchJobException e) {
+			LOG.error("the job " + jobName + " does not exist", e);
+		} catch (JobParametersInvalidException e) {
+			LOG.error("the job " + jobName + " does have invalid parameters:", e);
+		} catch (JobExecutionAlreadyRunningException e) {
+			LOG.error("the job " + jobName + " is already running:", e);
+		} catch (JobRestartException e) {
+			LOG.error("the job " + jobName + " could not be restarted:", e);
+		} catch (JobInstanceAlreadyCompleteException e) {
+			LOG.error("the job " + jobName + " could not restart an already successful instance:", e);
+		}
+	}
+
+	public void startNextInstance(String jobName) {
+		try {
+			jobOperator.startNextInstance(jobName);
+		} catch (NoSuchJobException e) {
+			LOG.error("the job " + jobName + " does not exist:", e);
+		} catch (JobParametersInvalidException e) {
+			LOG.error("the job " + jobName + " does have invalid parameters:", e);
+		} catch (JobExecutionAlreadyRunningException e) {
+			LOG.error("the job " + jobName + " is already running:", e);
+		} catch (JobRestartException e) {
+			LOG.error("the job " + jobName + " could not be restarted:", e);
+		} catch (JobInstanceAlreadyCompleteException e) {
+			LOG.error("the job " + jobName + " could not restart an already successful instance:", e);
+		} catch (JobParametersNotFoundException e) {
+			LOG.error("the job " + jobName + " could not find params:", e);
+		}
+	}
+
 }

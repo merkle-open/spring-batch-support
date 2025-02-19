@@ -4,9 +4,9 @@
 
 package com.namics.oss.spring.support.batch.converter;
 
-import com.namics.oss.spring.convert.CollectionConverter;
 import com.namics.oss.spring.support.batch.model.SimpleStep;
 import org.springframework.batch.core.StepExecution;
+import org.springframework.stereotype.Component;
 
 /**
  * StepExecutionToSimpleStepConverter.
@@ -14,29 +14,24 @@ import org.springframework.batch.core.StepExecution;
  * @author lboesch, Namics AG
  * @since 27.08.2014
  */
-public class StepExecutionToSimpleStepConverter extends CollectionConverter<StepExecution, SimpleStep> {
-	@Override
-	public SimpleStep convert(StepExecution stepExecution) {
-		return convert(stepExecution, null);
-	}
+@Component
+public class StepExecutionToSimpleStepConverter {
 
-	@Override
-	public SimpleStep convert(StepExecution source, SimpleStep simpleStep) {
-		SimpleStep target = simpleStep != null ? simpleStep : new SimpleStep();
-		target.stepName(source.getStepName())
-		      .status(source.getStatus().toString())
-		      .readCount(source.getReadCount())
-		      .writeCount(source.getWriteCount())
-		      .commitCount(source.getCommitCount())
-		      .rollbackCount(source.getRollbackCount())
-		      .readSkipCount(source.getReadSkipCount())
-		      .processSkipCount(source.getProcessSkipCount())
-		      .writeSkipCount(source.getWriteSkipCount())
-		      .startTime(source.getStartTime())
-		      .endTime(source.getEndTime())
-		      .exitStatus(source.getExitStatus().toString())
-		      .lastUpdated(source.getLastUpdated())
-		      .exitStatus(source.getExitStatus().toString());
-		return target;
+	public SimpleStep convert(final StepExecution source) {
+		return new SimpleStep(
+				source.getStepName(),
+				source.getStatus().toString(),
+				source.getReadCount(),
+				source.getWriteCount(),
+				source.getCommitCount(),
+				source.getRollbackCount(),
+				source.getReadSkipCount(),
+				source.getProcessSkipCount(),
+				source.getWriteSkipCount(),
+				source.getStartTime(),
+				source.getEndTime(),
+				source.getLastUpdated(),
+				source.getExitStatus().toString()
+		);
 	}
 }

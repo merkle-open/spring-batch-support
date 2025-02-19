@@ -7,6 +7,7 @@ package com.namics.oss.spring.support.batch.listener;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 
@@ -16,7 +17,7 @@ import org.springframework.batch.core.listener.JobExecutionListenerSupport;
  * @author lboesch, Namics AG
  * @since Jan 09, 2014
  */
-public class FailIfSkippedJobExecutionListener extends JobExecutionListenerSupport {
+public class FailIfSkippedJobExecutionListener implements JobExecutionListener {
 
 	@Override
 	public void afterJob(JobExecution jobExecution) {

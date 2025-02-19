@@ -4,31 +4,29 @@
 
 package com.namics.oss.spring.support.batch.util;
 
-import org.joda.time.DateMidnight;
-import org.joda.time.MutableDateTime;
-import org.junit.jupiter.api.Test;
-
-import java.util.Date;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- * DateUtilTest.
- *
- * @author aschaefer, Namics AG
- * @since 02.07.14 14:44
- */
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Optional;
+
+import org.junit.jupiter.api.Test;
+
 public class DateUtilTest {
 
 	@Test
-	public void testFormatDuration() throws Exception {
-		MutableDateTime mutableDateTime = new MutableDateTime(DateMidnight.now());
-		Date now = mutableDateTime.toDate();
-		mutableDateTime.addDays(1);
-		mutableDateTime.addHours(2);
-		mutableDateTime.addMinutes(3);
-		mutableDateTime.addSeconds(4);
-		Date then = mutableDateTime.toDate();
-		assertEquals("26 h : 3 m : 4.000 s", DateUtil.getDuration(now, then));
+	public void testFormatDuration() {
+		final LocalDateTime now = LocalDateTime.now();
+		final LocalDateTime then = now.plusHours(26).plusMinutes(3).plusSeconds(4);
+
+		assertEquals(Optional.of("26 h : 3 m : 4.000 s"), new DateUtil(ZoneId.systemDefault()).formatDuration(now, then));
+	}
+
+	@Test
+	void formatDate() {
+		assertEquals(
+				"20.02.2025 14:15:59",
+				new DateUtil(ZoneId.systemDefault()).formatDate(LocalDateTime.of(2025, 2, 20, 14, 15, 59))
+		);
 	}
 }

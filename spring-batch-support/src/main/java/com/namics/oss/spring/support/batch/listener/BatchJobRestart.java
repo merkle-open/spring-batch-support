@@ -19,23 +19,26 @@ import static java.util.stream.Collectors.toList;
  * @since 28.08.17 14:28
  */
 public class BatchJobRestart implements ApplicationListener<ContextRefreshedEvent> {
+    private static final Logger LOG = LoggerFactory.getLogger(BatchJobRestart.class);
+    private final JobExplorer jobExplorer;
 
-	private static final Logger LOG = LoggerFactory.getLogger(BatchJobRestart.class);
+    public BatchJobRestart(final JobExplorer jobExplorer) {
+        this.jobExplorer = jobExplorer;
+    }
 
-	protected final JobExplorer jobExplorer;
-
-	public BatchJobRestart(JobExplorer jobExplorer) {
-		this.jobExplorer = jobExplorer;
-	}
-
-	@Override
-	public void onApplicationEvent(ContextRefreshedEvent event) {
-		List<JobExecution> runningJobInstancesOnStartup = jobExplorer.getJobNames()
-		                                                             .stream()
-		                                                             .map(jobExplorer::findRunningJobExecutions)
-		                                                             .flatMap(Collection::stream)
-		                                                             .collect(toList());
-		runningJobInstancesOnStartup.forEach(e -> LOG.warn("found running job execution on context refresh: name={}, instanceId={}",
-		                                                   e.getJobConfigurationName(), e.getJobInstance().getInstanceId()));
-	}
+    @Override
+    public void onApplicationEvent(ContextRefreshedEvent event) {
+        jobExplorer
+                .getJobNames()
+                .stream()
+                .map(jobExplorer::findRunningJobExecutions)
+                .flatMap(Collection::stream)
+                .forEach(e ->
+                        LOG.warn(
+                                "found running job execution on context refresh: name={}, instanceId={}",
+                                e.getJobInstance().getJobName(),
+                                e.getJobInstance().getInstanceId()
+                        )
+                );
+    }
 }
