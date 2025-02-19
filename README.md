@@ -1,35 +1,53 @@
 # Spring Batch Support
+Use to start/stop batch jobs over web servlet.
 
-[Project Documentation](http://namics.github.io/spring-batch-support)
+![Example View](assets/example-overview.png)
 
-System        | Status
---------------|------------------------------------------------        
-CI master     | [![Build Status][travis-master]][travis-url]
-CI develop    | [![Build Status][travis-develop]][travis-url]
-Dependency    | [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.namics.oss.spring.support.batch/spring-batch-support/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.namics.oss.spring.support.batch/spring-batch-support)
+## Requirements
+- Java: JDK 21
+- Spring: Version 6 or higher
+- Spring Batch: Version 5 or higher
 
-This modules aims to provide .
+## Setup
+### Add Maven dependency:
+```xml
+<dependency>
+    <groupId>com.namics.oss.spring.support.batch</groupId>
+    <artifactId>spring-batch-support</artifactId>
+    <version>1.2.0</version>
+</dependency>
+```
 
-## Usage
+### Configure the required properties
+The default settings for servlet-name and servlet-mapping can be overwritten. You could also enable a dark mode.
+```properties
+com.namics.oss.spring.support.batch.web.servlet-name=springBatch
+com.namics.oss.spring.support.batch.web.servlet-mapping=/batch/*
+com.namics.oss.spring.support.batch.web.dark-mode=true
+```
 
-### Maven Dependency (Latest Version in `pom.xml`):
+### Enable cleanup scheduled method
+With the following properties the clean up of spring batch database tables can be scheduled.
 
-	<dependency>
-		<groupId>com.namics.oss.spring.support.batch</groupId>
-		<artifactId>spring-batch-support</artifactId>
-		<version>1.1.1</version>
-	</dependency>
-	
-### Requirements	
+You can configure the days, how long the executions were persisted in the db. Default is 10 days. 
+You could also configure the cron expression for scheduling of the cleanup task.
 
-- Java: JDK 8 
-- Spring: Version 4 or higher
-- Spring Batch: Version 3 or higher           	 
+```properties
+com.namics.oss.spring.support.batch.clean-up.enabled=true
+com.namics.oss.spring.support.batch.clean-up.keep-days=10
+com.namics.oss.spring.support.batch.clean-up.cron=0/10 0/1 * 1/1 * ?
+```
 
+## include as iframe
+The js app will automatically setup CORS-Header for ajax requests, if required parameters are provided on integration.
 
+If you use iframe integration, provide the following params with your src url.
 
-org.springframework.batch.core.configuration.annotation.EnableBatchProcessing
+```html
+<iframe src="/batch/detail.html#csrf=${_csrf.token}&csrf_header=${_csrf.headerName}" width="100%"></iframe>
+```
 
-[travis-master]: https://travis-ci.org/namics/spring-batch-support.svg?branch=master
-[travis-develop]: https://travis-ci.org/namics/spring-batch-support.svg?branch=develop
-[travis-url]: https://travis-ci.org/namics/spring-batch-support
+Param        | Value
+-------------|--------------------------------------------------
+csrf         | actual token to be send with every request 
+csrf_header  | HTTP-Header name to send token with every request
