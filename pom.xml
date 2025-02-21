@@ -5,7 +5,7 @@
 
   <groupId>com.namics.oss.spring.support.batch</groupId>
   <artifactId>spring-batch-support</artifactId>
-  <version>1.2.1</version>
+  <version>1.2.2-SNAPSHOT</version>
 
   <name>${project.artifactId}</name>
   <description>Spring Batch Support Library aims to provide some sugar to use spring-batch.</description>
