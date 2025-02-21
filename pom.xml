@@ -19,6 +19,15 @@
     </license>
   </licenses>
 
+  <developers>
+    <developer>
+      <name>Merkle Magnolia</name>
+      <email>magnolia@namics.com</email>
+      <organization>Merkle DACH</organization>
+      <organizationUrl>https://merkleinc.ch</organizationUrl>
+    </developer>
+  </developers>
+
   <properties>
     <java.version>21</java.version>
     <encoding>UTF-8</encoding>
