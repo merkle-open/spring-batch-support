@@ -1,10 +1,12 @@
 
 package com.namics.oss.spring.support.batch.model;
 
-import com.namics.oss.spring.support.batch.util.DateUtil;
-
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+
+import io.micrometer.common.lang.Nullable;
 
 /**
  * Spring Batch job information.
@@ -14,131 +16,96 @@ import java.util.List;
  * @since Jun 3, 2013
  */
 public class Job {
-	protected String name;
-	protected Date startTime;
-	protected Date endTime;
-	protected String status;
-	protected boolean running;
-	protected String exitStatus;
-	protected List<Parameter> jobParameters;
-	protected List<SimpleStep> steps;
+	private final String name;
+	@Nullable
+	private final LocalDateTime startTime;
+    @Nullable
+    private final String startTimeFormatted;
+    @Nullable
+	private final LocalDateTime endTime;
+    @Nullable
+    private final String endTimeFormatted;
+    @Nullable
+    private final String duration;
+    @Nullable
+	private final String status;
+	private final boolean running;
+	@Nullable
+	private final String exitStatus;
+	private final List<Parameter> jobParameters;
+	private final List<SimpleStep> steps;
 
-	/**
-	 * Creates a new job object with the name given.
-	 *
-	 * @param name .
-	 */
-	public Job(String name) {
+	public Job(final String name) {
+		this(name, null, null, null, null, null, null,false, null, Collections.emptyList(), Collections.emptyList());
+	}
+
+	public Job(
+			String name,
+			@Nullable LocalDateTime startTime,
+			@Nullable String startTimeFormatted,
+			@Nullable LocalDateTime endTime,
+			@Nullable String endTimeFormatted,
+			@Nullable String duration,
+			@Nullable String status,
+			boolean running,
+			@Nullable String exitStatus,
+			List<Parameter> jobParameters,
+			List<SimpleStep> steps
+	) {
 		this.name = name;
+		this.startTime = startTime;
+        this.startTimeFormatted = startTimeFormatted;
+        this.endTime = endTime;
+        this.endTimeFormatted = endTimeFormatted;
+        this.duration = duration;
+        this.status = status;
+		this.running = running;
+		this.exitStatus = exitStatus;
+		this.jobParameters = jobParameters;
+		this.steps = steps;
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public void setStartTime(Date startTime) {
-		this.startTime = startTime;
+	public Optional<LocalDateTime> getStartTime() {
+		return Optional.ofNullable(startTime);
 	}
 
-	public Date getStartTime() {
-		return startTime;
+	public Optional<String> getStartTimeFormatted() {
+		return Optional.ofNullable(startTimeFormatted);
 	}
 
-	public String getStartTimeFormatted() {
-		return DateUtil.getDate(startTime);
+	public Optional<LocalDateTime> getEndTime() {
+		return Optional.ofNullable(endTime);
 	}
 
-	public void setEndTime(Date endTime) {
-		this.endTime = endTime;
+	public Optional<String> getEndTimeFormatted() {
+		return Optional.ofNullable(endTimeFormatted);
 	}
 
-	public Date getEndTime() {
-		return endTime;
+	public Optional<String> getDuration() {
+		return Optional.ofNullable(duration);
 	}
 
-	public String getEndTimeFormatted() {
-		return DateUtil.getDate(endTime);
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
-	public String getStatus() {
-		return status;
-	}
-
-	public void setRunning(boolean running) {
-		this.running = running;
+	public Optional<String> getStatus() {
+		return Optional.ofNullable(status);
 	}
 
 	public boolean isRunning() {
 		return running;
 	}
 
-	public String getExitStatus() {
-		return exitStatus;
-	}
-
-	public void setExitStatus(String exitStatus) {
-		this.exitStatus = exitStatus;
+	public Optional<String> getExitStatus() {
+		return Optional.ofNullable(exitStatus);
 	}
 
 	public List<SimpleStep> getSteps() {
 		return steps;
 	}
 
-	public void setSteps(List<SimpleStep> steps) {
-		this.steps = steps;
-	}
-
 	public List<Parameter> getJobParameters() {
 		return jobParameters;
-	}
-
-	public void setJobParameters(List<Parameter> jobParameters) {
-		this.jobParameters = jobParameters;
-	}
-
-	public String getDuration() {
-		if (getStartTime() == null) {
-			return "";
-		}
-		return DateUtil.getDuration(getStartTime(), getEndTime());
-	}
-
-	public Job startTime(Date startTime) {
-		setStartTime(startTime);
-		return this;
-	}
-
-	public Job endTime(Date endTime) {
-		setEndTime(endTime);
-		return this;
-	}
-
-	public Job status(String status) {
-		setStatus(status);
-		return this;
-	}
-
-	public Job running(boolean running) {
-		setRunning(running);
-		return this;
-	}
-
-	public Job exitStatus(String exitStatus) {
-		setExitStatus(exitStatus);
-		return this;
-	}
-
-	public Job jobParameters(List<Parameter> jobParameters) {
-		setJobParameters(jobParameters);
-		return this;
-	}
-
-	public Job steps(List<SimpleStep> steps) {
-		setSteps(steps);
-		return this;
 	}
 }

@@ -4,57 +4,50 @@
 
 package com.namics.oss.spring.support.batch.util;
 
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
-import org.joda.time.format.PeriodFormatter;
-import org.joda.time.format.PeriodFormatterBuilder;
 
-import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAccessor;
 import java.util.Date;
+import java.util.Optional;
 
-/**
- * DateUtil.
- *
- * @author lboesch, Namics AG
- * @since 17.04.2014
- */
+import org.springframework.stereotype.Component;
+
+import io.micrometer.common.lang.Nullable;
+import jakarta.inject.Inject;
+
+@Component
 public class DateUtil {
+	private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+	private final ZoneId zoneId;
 
-	//todo rewrite to new time api and skip joda time!
-
-	public static final String DATE_STRING = "dd.MM.yyyy HH:mm:SS";
-	protected static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(DATE_STRING);
-	private static final DateUtil INSTANCE = new DateUtil();
-	private static final PeriodFormatter daysHoursMinutes = new PeriodFormatterBuilder().appendDays()
-	                                                                                    .appendSuffix(" d", " d")
-	                                                                                    .appendSeparator(" : ")
-	                                                                                    .appendHours()
-	                                                                                    .appendSuffix(" h", " h")
-	                                                                                    .appendSeparator(" : ")
-	                                                                                    .appendMinutes()
-	                                                                                    .appendSuffix(" m", " m")
-	                                                                                    .appendSeparator(" : ")
-	                                                                                    .appendSecondsWithMillis()
-	                                                                                    .appendSuffix(" s", " s")
-	                                                                                    .toFormatter();
-
-	public static String getDuration(Date from, Date to) {
-		return INSTANCE.formatDuration(from, to);
+	@Inject
+	public DateUtil(final ZoneId zoneId) {
+		this.zoneId = zoneId;
 	}
 
-	public static String getDate(Date date) {
-		return INSTANCE.formatDate(date);
+	public Optional<String> formatDuration(@Nullable Temporal from, @Nullable Temporal to) {
+		return Optional
+				.ofNullable(from).flatMap(f -> Optional.ofNullable(to).map(t -> Duration.between(f, t)))
+				.map(diff ->
+						String.format("%d h : %d m : %.3f s",
+								diff.toHours(),
+								diff.toMinutesPart(),
+								(float)diff.toSecondsPart()
+						)
+				);
 	}
 
-	public String formatDuration(Date from, Date to) {
-		DateTime endTime = new DateTime();
-		if (to != null) {
-			endTime = new DateTime(to);
-		}
-		return daysHoursMinutes.print(new Duration(new DateTime(from), endTime).toPeriod());
+	public LocalDateTime asLocalDateTime(final Date date) {
+		final Instant instant = Instant.ofEpochMilli(date.getTime());
+		return LocalDateTime.ofInstant(instant, zoneId);
 	}
 
-	public String formatDate(Date date) {
+	public String formatDate(TemporalAccessor date) {
 		if (date != null) {
 			return DATE_FORMAT.format(date);
 		}

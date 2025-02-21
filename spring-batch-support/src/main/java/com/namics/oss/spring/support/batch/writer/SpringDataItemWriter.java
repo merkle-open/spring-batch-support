@@ -6,6 +6,7 @@ package com.namics.oss.spring.support.batch.writer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.data.repository.CrudRepository;
 
@@ -20,11 +21,8 @@ import static org.springframework.util.Assert.notNull;
  * @since 06.02.14 15:31
  */
 public class SpringDataItemWriter<T> implements ItemWriter<T> {
-
 	private static final Logger LOG = LoggerFactory.getLogger(SpringDataItemWriter.class);
-
-	protected CrudRepository<T, ?> repository;
-
+	private final CrudRepository<T, ?> repository;
 
 	/**
 	 * Writer to persist items using a spring data {@link org.springframework.data.repository.CrudRepository}.
@@ -42,14 +40,13 @@ public class SpringDataItemWriter<T> implements ItemWriter<T> {
 	 * @param items items to be persisted.
 	 */
 	@Override
-	public void write(List<? extends T> items) {
+	public void write(Chunk<? extends T> items) {
 		LOG.info("Write {} {} ", items.size(), items.iterator().hasNext() ? items.iterator().next().getClass() : "");
 		if (LOG.isTraceEnabled()) {
 			for (T item : items) {
 				LOG.trace("write item {}", item);
 			}
 		}
-		this.repository.saveAll(items);
+		this.repository.save(items);
 	}
-
 }

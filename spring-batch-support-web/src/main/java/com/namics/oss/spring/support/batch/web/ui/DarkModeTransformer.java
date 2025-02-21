@@ -1,6 +1,7 @@
 package com.namics.oss.spring.support.batch.web.ui;
 
-import io.micrometer.core.instrument.util.IOUtils;
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -8,38 +9,30 @@ import org.springframework.web.servlet.resource.ResourceTransformer;
 import org.springframework.web.servlet.resource.ResourceTransformerChain;
 import org.springframework.web.servlet.resource.TransformedResource;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
+import io.micrometer.core.instrument.util.IOUtils;
+import jakarta.servlet.http.HttpServletRequest;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
-/**
- * DarkModeTransformer.
- *
- * @author lboesch, Namics AG
- * @since 06.04.20 15:19
- */
 public class DarkModeTransformer implements ResourceTransformer {
 	private static final Logger LOG = LoggerFactory.getLogger(DarkModeTransformer.class);
+	private final static String NON_DARK_MODE_CSS = "/assets/css/bootstrap.min.css";
+	private final static String DARK_MODE_CSS = "/assets/css/bootstrap.dark.min.css";
 
 	protected boolean isDarkMode;
-
-	private static String NON_DARK_MODE_CSS = "assets/css/bootstrap.min.css";
-	private static String DARK_MODE_CSS = "assets/css/bootstrap.dark.min.css";
 
 	public DarkModeTransformer(boolean isDarkMode) {
 		this.isDarkMode = isDarkMode;
 	}
 
 	@Override
-	public Resource transform(HttpServletRequest httpServletRequest, Resource resource, ResourceTransformerChain resourceTransformerChain) throws IOException {
+	public Resource transform(final HttpServletRequest request, final Resource resource, final ResourceTransformerChain transformerChain) {
 		if (isDarkMode) {
 			LOG.info("about to show content in darkMode, replace links for css file.");
 			try {
-				resource = resourceTransformerChain.transform(httpServletRequest, resource);
-				String html = IOUtils.toString(resource.getInputStream(), UTF_8);
-				html = html.replace(NON_DARK_MODE_CSS, DARK_MODE_CSS);
-				return new TransformedResource(resource, html.getBytes());
+				final Resource transformedResource = transformerChain.transform(request, resource);
+				final String html = IOUtils
+						.toString(transformedResource.getInputStream(), UTF_8)
+						.replace(NON_DARK_MODE_CSS, DARK_MODE_CSS);
+				return new TransformedResource(transformedResource, html.getBytes());
 			} catch (Exception e) {
 				LOG.info("problem with darkmode, use default resource instead.");
 			}
